@@ -67,11 +67,11 @@ export default function Home() {
       <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden', paddingTop: 70 }}>
         <div className="circuit-bg" />
         {/* Radial glow */}
-        <div style={{ position: 'absolute', right: '10%', top: '50%', transform: 'translateY(-50%)', width: 500, height: 500, background: 'radial-gradient(circle, rgba(0,255,136,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', right: '6%', top: '50%', transform: 'translateY(-50%)', width: 620, height: 620, background: 'radial-gradient(circle, rgba(0,255,136,0.09) 0%, rgba(0,180,255,0.04) 35%, transparent 72%)', pointerEvents: 'none' }} />
 
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center', width: '100%' }}>
+        <div className="container hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center', width: '100%', position: 'relative', zIndex: 1 }}>
           {/* Left */}
-          <div>
+          <div className="hero-left">
             <motion.div initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.2 }}
               style={{ display:'inline-flex',alignItems:'center',gap:8,padding:'6px 14px',background:'rgba(0,255,136,0.08)',border:'1px solid rgba(0,255,136,0.2)',borderRadius:100,marginBottom:24 }}>
               <div style={{ width:6,height:6,background:'#00FF88',borderRadius:'50%',boxShadow:'0 0 8px #00FF88',animation:'ledPulse 1.5s ease infinite' }} />
@@ -110,24 +110,35 @@ export default function Home() {
           </div>
 
           {/* Right - PCB Animation */}
-          <motion.div initial={{ opacity:0,x:60 }} animate={{ opacity:1,x:0 }} transition={{ delay:0.3,duration:0.8,ease:'easeOut' }}
-            style={{ display:'flex',justifyContent:'center',alignItems:'center',position:'relative' }}>
+          <motion.div className="hero-right" initial={{ opacity:0,x:60 }} animate={{ opacity:1,x:0 }} transition={{ delay:0.3,duration:0.8,ease:'easeOut' }}
+            style={{ display:'flex',justifyContent:'center',alignItems:'center',position:'relative',minHeight:440 }}>
             <PCBHeroAnimation />
             {/* Floating labels */}
-            <motion.div animate={{ y:[-6,6,-6] }} transition={{ duration:3,repeat:Infinity,ease:'easeInOut' }}
-              style={{ position:'absolute',top:10,left:-20,padding:'8px 14px',background:'rgba(0,212,255,0.1)',border:'1px solid rgba(0,212,255,0.3)',borderRadius:6 }}>
+            <motion.div className="hero-tag-left" animate={{ y:[-6,6,-6] }} transition={{ duration:3,repeat:Infinity,ease:'easeInOut' }}
+              style={{ position:'absolute',top:34,left:-156,padding:'8px 14px',background:'rgba(0,212,255,0.1)',border:'1px solid rgba(0,212,255,0.3)',borderRadius:6 }}>
               <div style={{ fontFamily:'Orbitron,monospace',fontSize:9,color:'#00D4FF',fontWeight:700 }}>SMT ASSEMBLY</div>
               <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:11,color:'#8899BB' }}>IPC Class 2/3</div>
             </motion.div>
-            <motion.div animate={{ y:[6,-6,6] }} transition={{ duration:3.5,repeat:Infinity,ease:'easeInOut',delay:0.5 }}
-              style={{ position:'absolute',bottom:30,right:-10,padding:'8px 14px',background:'rgba(212,134,10,0.1)',border:'1px solid rgba(212,134,10,0.3)',borderRadius:6 }}>
+            <motion.div className="hero-tag-right" animate={{ y:[6,-6,6] }} transition={{ duration:3.5,repeat:Infinity,ease:'easeInOut',delay:0.5 }}
+              style={{ position:'absolute',bottom:24,right:-160,padding:'8px 14px',background:'rgba(212,134,10,0.1)',border:'1px solid rgba(212,134,10,0.3)',borderRadius:6 }}>
               <div style={{ fontFamily:'Orbitron,monospace',fontSize:9,color:'#D4860A',fontWeight:700 }}>QUALITY TESTED</div>
               <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:11,color:'#8899BB' }}>100% AOI + ICT</div>
             </motion.div>
           </motion.div>
         </div>
 
-        <style>{`@media(max-width:768px){.hero-grid{grid-template-columns:1fr!important}}`}</style>
+        <style>{`
+          @media(max-width:980px){
+            .hero-grid{grid-template-columns:1fr!important;gap:28px!important}
+            .hero-left{order:1}
+            .hero-right{order:2}
+            .hero-tag-left{left:8px!important;top:10px!important}
+            .hero-tag-right{right:8px!important;bottom:14px!important}
+          }
+          @media(max-width:640px){
+            .hero-right{min-height:320px}
+          }
+        `}</style>
       </section>
 
       {/* Stats Bar */}

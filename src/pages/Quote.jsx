@@ -1,149 +1,274 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDropzone } from 'react-dropzone'
 
-const steps = ['PCB Specs','Assembly','Gerber Upload','Contact','Confirm']
+const steps = ['PCB SPECS', 'ASSEMBLY', 'FILES', 'CONTACT', 'DONE']
 
-const LAYERS = ['1','2','4','6','8','10+']
-const THICKNESS = ['0.8mm','1.0mm','1.6mm','2.0mm']
-const SURFACE = ['HASL','ENIG','OSP','Immersion Silver']
+const LAYERS = ['1', '2', '4', '6', '8', '10+']
+const THICKNESS = ['0.8mm', '1.0mm', '1.6mm', '2.0mm']
+const SURFACE = ['HASL', 'ENIG', 'OSP', 'Immersion Silver']
 const SOLDERMASK = [
-  { color:'#1a6a2a',label:'Green' },{ color:'#8B0000',label:'Red' },
-  { color:'#00008B',label:'Blue' },{ color:'#111',label:'Black' },
-  { color:'#eee',label:'White' },{ color:'#ccaa00',label:'Yellow' },
+  { color: '#1a6a2a', label: 'Green' },
+  { color: '#8b0000', label: 'Red' },
+  { color: '#00008b', label: 'Blue' },
+  { color: '#111111', label: 'Black' },
+  { color: '#eaeaea', label: 'White' },
+  { color: '#ccaa00', label: 'Yellow' },
 ]
-const SILKSCREEN = [{ color:'#fff',label:'White' },{ color:'#111',label:'Black' }]
-const ASSEMBLY_TYPE = ['SMT','THT','Mixed']
-const SUPPLY = ['Customer Supplied','Microtron Sourced','Mixed']
-const QTY_PRESETS = [10,50,100,500,1000]
+const SILKSCREEN = [
+  { color: '#ffffff', label: 'White' },
+  { color: '#111111', label: 'Black' },
+]
+const ASSEMBLY_TYPE = ['SMT', 'THT', 'Mixed']
+const SUPPLY = ['Customer Supplied', 'Microtron Sourced', 'Mixed']
+const QTY_PRESETS = [10, 50, 100, 500, 1000]
 
 function ProgressBar({ step }) {
-  const pct = ((step) / (steps.length - 1)) * 100
   return (
-    <div style={{ marginBottom:40 }}>
-      <div style={{ display:'flex',justifyContent:'space-between',marginBottom:12 }}>
-        {steps.map((s,i) => (
-          <div key={i} style={{ display:'flex',flexDirection:'column',alignItems:'center',gap:4,flex:1 }}>
-            <motion.div animate={{ background: i<=step ? '#00FF88' : '#1e2d47', borderColor: i<=step ? '#00FF88' : '#1e2d47', boxShadow: i===step ? '0 0 14px #00FF88' : 'none' }}
-              style={{ width:28,height:28,borderRadius:'50%',border:'2px solid #1e2d47',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'Orbitron,monospace',fontSize:10,fontWeight:700,color: i<=step ? '#000' : '#4a5568',transition:'all 0.4s' }}>
-              {i < step ? '✓' : i+1}
-            </motion.div>
-            <span style={{ fontFamily:'Rajdhani,sans-serif',fontSize:11,color: i===step ? '#00FF88' : '#4a5568',fontWeight:600,letterSpacing:0.5,textAlign:'center',display:'none' }}>{s}</span>
+    <div className="quote-stepper">
+      {steps.map((label, i) => {
+        const isDone = i < step
+        const isActive = i === step
+        return (
+          <div key={label} className="quote-step-item">
+            <div className={`quote-step-box ${isDone ? 'done' : ''} ${isActive ? 'active' : ''}`}>
+              {i + 1}
+            </div>
+            <div className={`quote-step-label ${isActive ? 'active' : ''}`}>{label}</div>
           </div>
-        ))}
-      </div>
-      <div style={{ height:3,background:'#1e2d47',borderRadius:2,overflow:'hidden' }}>
-        <motion.div animate={{ width:`${pct}%` }} transition={{ duration:0.5,ease:'easeInOut' }} style={{ height:'100%',background:'linear-gradient(90deg,#00FF88,#00D4FF)',boxShadow:'0 0 10px rgba(0,255,136,0.5)' }} />
-      </div>
-      <div style={{ marginTop:8,fontFamily:'Rajdhani,sans-serif',fontSize:13,color:'#00FF88',fontWeight:600,textAlign:'center' }}>
-        Step {step+1} of {steps.length}: {steps[step]}
-      </div>
+        )
+      })}
     </div>
   )
 }
 
 function Step1({ data, setData }) {
+  const width = Number(data.width || 100)
+  const height = Number(data.height || 80)
+  const previewW = Math.max(130, Math.min(250, width * 1.8))
+  const previewH = Math.max(92, Math.min(180, height * 1.8))
+  const maskTheme = {
+    Green: { board: '#0d5428', border: '#00ff9d', inner: 'rgba(163,220,192,0.25)', holeStroke: '#7fa0d1' },
+    Red: { board: '#5e1010', border: '#ff7070', inner: 'rgba(255,188,188,0.25)', holeStroke: '#ffb2b2' },
+    Blue: { board: '#10356a', border: '#4dc6ff', inner: 'rgba(182,221,255,0.24)', holeStroke: '#96c9ff' },
+    Black: { board: '#12161f', border: '#8aa3c3', inner: 'rgba(186,200,220,0.2)', holeStroke: '#9fb3cc' },
+    White: { board: '#e8ecef', border: '#6f859c', inner: 'rgba(111,133,156,0.22)', holeStroke: '#54667b' },
+    Yellow: { board: '#9b7d12', border: '#ffd95b', inner: 'rgba(255,238,176,0.25)', holeStroke: '#ffe8a1' },
+  }
+  const finishTone = {
+    HASL: '#d5b272',
+    ENIG: '#e6bf65',
+    OSP: '#bf7a35',
+    'Immersion Silver': '#cfd6e1',
+  }
+  const activeMask = maskTheme[data.soldermask] || maskTheme.Green
+  const activeSilk = data.silkscreen === 'Black' ? '#12161f' : '#f6fbff'
+  const activeTrace = finishTone[data.surface] || finishTone.HASL
+  const centerAccent = data.silkscreen === 'Black' ? '#1fe7b1' : '#00eec4'
+
   return (
-    <div style={{ display:'flex',flexDirection:'column',gap:28 }}>
-      {/* Board preview */}
-      <div style={{ display:'flex',gap:32,alignItems:'flex-start' }}>
-        <div style={{ flex:1 }}>
-          <label className="form-label">PCB Layer Count</label>
-          <div style={{ display:'flex',flexWrap:'wrap',gap:8 }}>
-            {LAYERS.map(l => (
-              <motion.button key={l} whileHover={{ scale:1.05 }} whileTap={{ scale:0.97 }} onClick={() => setData({...data,layers:l})}
-                className={`quote-option-card ${data.layers===l?'selected':''}`} style={{ minWidth:60 }}>
-                <div style={{ fontFamily:'Orbitron,monospace',fontSize:13,fontWeight:700,color: data.layers===l ? '#00FF88' : '#8899BB' }}>{l}</div>
-                <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:11,color:'#4a5568',marginTop:2 }}>Layer{l!=='1'?'s':''}</div>
-              </motion.button>
+    <div className="quote-step1-grid">
+      <div>
+        <h2 className="quote-panel-title">PCB Specifications</h2>
+
+        <div className="quote-grid-2">
+          <div>
+            <label className="quote-field-label">Layers</label>
+            <select
+              className="quote-input quote-select"
+              value={data.layers}
+              onChange={(e) => setData({ ...data, layers: e.target.value })}
+            >
+              {LAYERS.map((l) => (
+                <option key={l} value={l}>
+                  {l === '10+' ? '10+ Layer' : `${l}-Layer`}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="quote-field-label">Quantity</label>
+            <div className="quote-qty-group">
+              <button
+                type="button"
+                className="quote-qty-btn"
+                onClick={() => setData({ ...data, qty: Math.max(1, Number(data.qty || 1) - 1) })}
+              >
+                -
+              </button>
+              <input
+                className="quote-input quote-qty-input"
+                type="number"
+                value={data.qty || ''}
+                onChange={(e) => setData({ ...data, qty: parseInt(e.target.value, 10) || 1 })}
+                min="1"
+              />
+              <button
+                type="button"
+                className="quote-qty-btn"
+                onClick={() => setData({ ...data, qty: Number(data.qty || 1) + 1 })}
+              >
+                +
+              </button>
+            </div>
+            <div className="quote-preset-row">
+              {QTY_PRESETS.map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  className={`quote-mini-btn ${Number(data.qty) === q ? 'active' : ''}`}
+                  onClick={() => setData({ ...data, qty: q })}
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="quote-grid-2">
+          <div>
+            <label className="quote-field-label">Width (mm)</label>
+            <input
+              className="quote-input"
+              type="number"
+              value={data.width}
+              onChange={(e) => setData({ ...data, width: e.target.value })}
+              min="10"
+              max="500"
+            />
+          </div>
+          <div>
+            <label className="quote-field-label">Height (mm)</label>
+            <input
+              className="quote-input"
+              type="number"
+              value={data.height}
+              onChange={(e) => setData({ ...data, height: e.target.value })}
+              min="10"
+              max="500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="quote-field-label">Board Thickness</label>
+          <div className="quote-chip-row">
+            {THICKNESS.map((t) => (
+              <button
+                key={t}
+                type="button"
+                className={`quote-chip ${data.thickness === t ? 'active' : ''}`}
+                onClick={() => setData({ ...data, thickness: t })}
+              >
+                {t.toUpperCase()}
+              </button>
             ))}
           </div>
         </div>
 
-        {/* Live PCB preview */}
-        <div style={{ flexShrink:0 }}>
-          <label className="form-label" style={{ textAlign:'center',display:'block' }}>Board Preview</label>
-          <motion.div animate={{ width:Math.min(Math.max((data.width||100)/3,40),160), height:Math.min(Math.max((data.height||100)/3,30),120) }}
-            transition={{ duration:0.4 }} style={{ background:'#0d2a1a',border:'2px solid #1a4a2a',borderRadius:4,minWidth:40,minHeight:30,position:'relative',display:'flex',alignItems:'center',justifyContent:'center' }}>
-            <div style={{ position:'absolute',inset:4,border:'1px dashed rgba(0,255,136,0.2)',borderRadius:2 }} />
-            <span style={{ fontFamily:'Orbitron,monospace',fontSize:8,color:'rgba(0,255,136,0.5)',textAlign:'center' }}>PCB</span>
-          </motion.div>
-          <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:11,color:'#8899BB',textAlign:'center',marginTop:6 }}>{data.width||'—'}×{data.height||'—'} mm</div>
-        </div>
-      </div>
-
-      <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:16 }}>
         <div>
-          <label className="form-label">Width (mm)</label>
-          <input className="form-input" type="number" value={data.width} onChange={e=>setData({...data,width:e.target.value})} placeholder="e.g. 100" min="10" max="500" />
-        </div>
-        <div>
-          <label className="form-label">Height (mm)</label>
-          <input className="form-input" type="number" value={data.height} onChange={e=>setData({...data,height:e.target.value})} placeholder="e.g. 80" min="10" max="500" />
-        </div>
-      </div>
-
-      <div>
-        <label className="form-label">Quantity</label>
-        <div style={{ display:'flex',gap:8,alignItems:'center',flexWrap:'wrap' }}>
-          {QTY_PRESETS.map(q => (
-            <motion.button key={q} whileHover={{ scale:1.05 }} onClick={() => setData({...data,qty:q})}
-              className={`quote-option-card ${data.qty===q?'selected':''}`} style={{ minWidth:70 }}>
-              <div style={{ fontFamily:'Orbitron,monospace',fontSize:13,fontWeight:700,color: data.qty===q?'#00FF88':'#8899BB' }}>{q}</div>
-            </motion.button>
-          ))}
-          <div style={{ display:'flex',alignItems:'center',gap:8 }}>
-            <button onClick={() => setData({...data,qty:Math.max(1,(data.qty||1)-1)})} style={{ width:32,height:32,background:'rgba(17,24,39,0.8)',border:'1px solid #1e2d47',borderRadius:4,color:'#F0F4FF',cursor:'pointer',fontSize:18 }}>−</button>
-            <input className="form-input" type="number" value={data.qty||''} onChange={e=>setData({...data,qty:parseInt(e.target.value)||1})} style={{ width:80,textAlign:'center' }} placeholder="Custom" />
-            <button onClick={() => setData({...data,qty:(data.qty||1)+1})} style={{ width:32,height:32,background:'rgba(17,24,39,0.8)',border:'1px solid #1e2d47',borderRadius:4,color:'#F0F4FF',cursor:'pointer',fontSize:18 }}>+</button>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <label className="form-label">Board Thickness</label>
-        <div style={{ display:'flex',gap:8,flexWrap:'wrap' }}>
-          {THICKNESS.map(t => (
-            <motion.button key={t} whileHover={{ scale:1.05 }} onClick={() => setData({...data,thickness:t})}
-              className={`quote-option-card ${data.thickness===t?'selected':''}`}>
-              <div style={{ fontFamily:'Orbitron,monospace',fontSize:12,color: data.thickness===t?'#00FF88':'#8899BB' }}>{t}</div>
-            </motion.button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <label className="form-label">Surface Finish</label>
-        <div style={{ display:'flex',gap:8,flexWrap:'wrap' }}>
-          {SURFACE.map(s => (
-            <motion.button key={s} whileHover={{ scale:1.05 }} onClick={() => setData({...data,surface:s})}
-              className={`quote-option-card ${data.surface===s?'selected':''}`}>
-              <div style={{ fontFamily:'Orbitron,monospace',fontSize:11,color: data.surface===s?'#00FF88':'#8899BB' }}>{s}</div>
-            </motion.button>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:24 }}>
-        <div>
-          <label className="form-label">Solder Mask Color</label>
-          <div style={{ display:'flex',gap:10,flexWrap:'wrap',marginTop:4 }}>
-            {SOLDERMASK.map(sm => (
-              <motion.div key={sm.label} whileHover={{ scale:1.15 }} title={sm.label} onClick={() => setData({...data,soldermask:sm.label})}
-                className={`color-swatch ${data.soldermask===sm.label?'selected':''}`} style={{ background:sm.color }} />
+          <label className="quote-field-label">Surface Finish</label>
+          <div className="quote-chip-row">
+            {SURFACE.map((s) => (
+              <button
+                key={s}
+                type="button"
+                className={`quote-chip ${data.surface === s ? 'active' : ''}`}
+                onClick={() => setData({ ...data, surface: s })}
+              >
+                {s.toUpperCase()}
+              </button>
             ))}
           </div>
-          {data.soldermask && <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:12,color:'#00FF88',marginTop:6 }}>{data.soldermask}</div>}
         </div>
-        <div>
-          <label className="form-label">Silkscreen Color</label>
-          <div style={{ display:'flex',gap:10,marginTop:4 }}>
-            {SILKSCREEN.map(ss => (
-              <motion.div key={ss.label} whileHover={{ scale:1.15 }} title={ss.label} onClick={() => setData({...data,silkscreen:ss.label})}
-                className={`color-swatch ${data.silkscreen===ss.label?'selected':''}`} style={{ background:ss.color,border:`3px solid ${data.silkscreen===ss.label ? '#00FF88' : '#333'}` }} />
-            ))}
+
+        <div className="quote-grid-2">
+          <div>
+            <label className="quote-field-label">Solder Mask Color</label>
+            <div className="quote-swatch-row">
+              {SOLDERMASK.map((sm) => (
+                <button
+                  key={sm.label}
+                  type="button"
+                  title={sm.label}
+                  className={`quote-swatch ${data.soldermask === sm.label ? 'active' : ''}`}
+                  style={{ background: sm.color }}
+                  onClick={() => setData({ ...data, soldermask: sm.label })}
+                />
+              ))}
+            </div>
           </div>
-          {data.silkscreen && <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:12,color:'#00FF88',marginTop:6 }}>{data.silkscreen}</div>}
+          <div>
+            <label className="quote-field-label">Silkscreen Color</label>
+            <div className="quote-swatch-row">
+              {SILKSCREEN.map((ss) => (
+                <button
+                  key={ss.label}
+                  type="button"
+                  title={ss.label}
+                  className={`quote-swatch ${data.silkscreen === ss.label ? 'active' : ''}`}
+                  style={{ background: ss.color }}
+                  onClick={() => setData({ ...data, silkscreen: ss.label })}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="quote-preview-card">
+        <div className="quote-preview-label">LIVE PREVIEW</div>
+        <div className="quote-preview-board-wrap">
+          <motion.svg
+            viewBox="0 0 280 200"
+            width={previewW}
+            height={previewH}
+            className="quote-preview-board"
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.25 }}
+          >
+            <rect x="22" y="18" width="236" height="164" rx="6" fill={activeMask.board} stroke={activeMask.border} strokeWidth="1.5" />
+            <rect x="28" y="24" width="224" height="152" rx="4" fill="none" stroke={activeMask.inner} strokeDasharray="4 5" />
+            <path d="M34 82 H116 L130 70 H152 L166 82 H246" stroke={activeTrace} strokeWidth="2.2" fill="none" />
+            <path d="M34 118 H84 L98 130 H166 L180 118 H246" stroke={activeTrace} strokeWidth="2.2" fill="none" />
+            <g opacity="0.9">
+              {[
+                [34, 30],
+                [246, 30],
+                [34, 170],
+                [246, 170],
+              ].map(([cx, cy], i) => (
+                <g key={i}>
+                  <circle cx={cx} cy={cy} r="6" fill="#071025" stroke={activeMask.holeStroke} />
+                  <circle cx={cx} cy={cy} r="3.4" fill="#020814" />
+                </g>
+              ))}
+            </g>
+            <circle cx="140" cy="100" r="5.5" fill="#082035" stroke={centerAccent} />
+            <path d="M140 72 V130 M114 100 H166" stroke={centerAccent} strokeWidth="1.1" opacity="0.85" />
+            <text x="140" y="176" textAnchor="middle" fill={activeSilk} opacity="0.85" fontSize="12" fontFamily="Orbitron,monospace">
+              {`${width} x ${height} mm - ${data.layers}L`}
+            </text>
+          </motion.svg>
+        </div>
+        <div className="quote-preview-meta">
+          <div>
+            Layers: <span>{data.layers}</span>
+          </div>
+          <div>
+            Thickness: <span>{data.thickness}</span>
+          </div>
+          <div>
+            Finish: <span>{data.surface}</span>
+          </div>
+          <div>
+            Mask / Silk: <span>{`${data.soldermask} / ${data.silkscreen}`}</span>
+          </div>
+          <div>
+            Quantity: <span>{data.qty}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -152,54 +277,82 @@ function Step1({ data, setData }) {
 
 function Step2({ data, setData }) {
   return (
-    <div style={{ display:'flex',flexDirection:'column',gap:28 }}>
+    <div className="quote-step-basic">
+      <h2 className="quote-panel-title">Assembly Options</h2>
+
       <div>
-        <label className="form-label">Assembly Required?</label>
-        <div style={{ display:'flex',alignItems:'center',gap:16,marginTop:8 }}>
-          <div className={`toggle ${data.assembly?'on':''}`} onClick={() => setData({...data,assembly:!data.assembly})}>
+        <label className="quote-field-label">Assembly Required?</label>
+        <div className="quote-toggle-row">
+          <div className={`toggle ${data.assembly ? 'on' : ''}`} onClick={() => setData({ ...data, assembly: !data.assembly })}>
             <div className="toggle-thumb" />
           </div>
-          <span style={{ fontFamily:'Rajdhani,sans-serif',fontSize:15,color: data.assembly ? '#00FF88' : '#8899BB',fontWeight:600 }}>
-            {data.assembly ? 'Yes — Include assembly' : 'No — PCB only'}
-          </span>
+          <span className="quote-toggle-text">{data.assembly ? 'Yes - Include assembly' : 'No - PCB only'}</span>
         </div>
       </div>
 
       <AnimatePresence>
         {data.assembly && (
-          <motion.div initial={{ opacity:0,height:0 }} animate={{ opacity:1,height:'auto' }} exit={{ opacity:0,height:0 }} style={{ overflow:'hidden',display:'flex',flexDirection:'column',gap:24 }}>
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 22 }}
+          >
             <div>
-              <label className="form-label">Assembly Type</label>
-              <div style={{ display:'flex',gap:10,flexWrap:'wrap',marginTop:4 }}>
-                {ASSEMBLY_TYPE.map(t => (
-                  <motion.button key={t} whileHover={{ scale:1.05 }} onClick={() => setData({...data,assemblyType:t})}
-                    className={`quote-option-card ${data.assemblyType===t?'selected':''}`} style={{ minWidth:100 }}>
-                    <div style={{ fontFamily:'Orbitron,monospace',fontSize:12,color: data.assemblyType===t?'#00FF88':'#8899BB' }}>{t}</div>
-                    <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:11,color:'#4a5568',marginTop:2 }}>
-                      {t==='SMT'?'Surface Mount':t==='THT'?'Through-Hole':'Both Types'}
-                    </div>
-                  </motion.button>
+              <label className="quote-field-label">Assembly Type</label>
+              <div className="quote-chip-row">
+                {ASSEMBLY_TYPE.map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    className={`quote-chip ${data.assemblyType === t ? 'active' : ''}`}
+                    onClick={() => setData({ ...data, assemblyType: t })}
+                  >
+                    {t}
+                  </button>
                 ))}
               </div>
             </div>
+
             <div>
-              <label className="form-label">Component Supply</label>
-              <div style={{ display:'flex',gap:10,flexWrap:'wrap' }}>
-                {SUPPLY.map(s => (
-                  <motion.button key={s} whileHover={{ scale:1.05 }} onClick={() => setData({...data,supply:s})}
-                    className={`quote-option-card ${data.supply===s?'selected':''}`}>
-                    <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:13,color: data.supply===s?'#00FF88':'#8899BB',fontWeight:600 }}>{s}</div>
-                  </motion.button>
+              <label className="quote-field-label">Component Supply</label>
+              <div className="quote-chip-row">
+                {SUPPLY.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    className={`quote-chip ${data.supply === s ? 'active' : ''}`}
+                    onClick={() => setData({ ...data, supply: s })}
+                  >
+                    {s}
+                  </button>
                 ))}
               </div>
             </div>
+
             <div>
-              <label className="form-label">Number of Unique Components</label>
-              <input className="form-input" type="number" value={data.uniqueComps||''} onChange={e=>setData({...data,uniqueComps:e.target.value})} placeholder="e.g. 25" min="1" style={{ maxWidth:200 }} />
+              <label className="quote-field-label">Number of Unique Components</label>
+              <input
+                className="quote-input"
+                type="number"
+                value={data.uniqueComps || ''}
+                onChange={(e) => setData({ ...data, uniqueComps: e.target.value })}
+                placeholder="e.g. 25"
+                min="1"
+                style={{ maxWidth: 220 }}
+              />
             </div>
+
             <div>
-              <label className="form-label">Special Requirements</label>
-              <textarea className="form-input" rows={4} value={data.specialReq||''} onChange={e=>setData({...data,specialReq:e.target.value})} placeholder="Conformal coating, lead-free, specific IPC class, etc." style={{ resize:'vertical' }} />
+              <label className="quote-field-label">Special Requirements</label>
+              <textarea
+                className="quote-input"
+                rows={4}
+                value={data.specialReq || ''}
+                onChange={(e) => setData({ ...data, specialReq: e.target.value })}
+                placeholder="Conformal coating, lead-free, IPC class, etc."
+                style={{ resize: 'vertical' }}
+              />
             </div>
           </motion.div>
         )}
@@ -210,46 +363,63 @@ function Step2({ data, setData }) {
 
 function Step3({ data, setData }) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: { 'application/zip':['.zip'],  'application/x-rar-compressed':['.rar'], 'application/octet-stream':['.gbr','.ger'] },
+    accept: {
+      'application/zip': ['.zip'],
+      'application/x-rar-compressed': ['.rar'],
+      'application/octet-stream': ['.gbr', '.ger'],
+    },
     maxFiles: 5,
-    onDrop: files => setData({...data, files: [...(data.files||[]), ...files]})
+    onDrop: (files) => setData({ ...data, files: [...(data.files || []), ...files] }),
   })
 
   return (
-    <div style={{ display:'flex',flexDirection:'column',gap:24 }}>
+    <div className="quote-step-basic">
+      <h2 className="quote-panel-title">Gerber Files</h2>
       <div>
-        <label className="form-label">Upload Gerber Files</label>
-        <div {...getRootProps()} className={`drop-zone ${isDragActive?'active':''}`} style={{ position:'relative',overflow:'hidden' }}>
+        <label className="quote-field-label">Upload Files</label>
+        <div {...getRootProps()} className={`drop-zone ${isDragActive ? 'active' : ''}`} style={{ position: 'relative', overflow: 'hidden' }}>
           <input {...getInputProps()} />
-          {/* PCB outline decoration */}
-          <svg viewBox="0 0 300 120" style={{ position:'absolute',inset:0,width:'100%',height:'100%',opacity:0.08,pointerEvents:'none' }}>
-            <rect x="10" y="10" width="280" height="100" rx="4" fill="none" stroke="#00FF88" strokeWidth="1.5" strokeDasharray="8,4"/>
-            {[15,25,35].map((x,i) => <circle key={i} cx={x} cy="20" r="3" fill="#00FF88"/>)}
+          <svg viewBox="0 0 300 120" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.08, pointerEvents: 'none' }}>
+            <rect x="10" y="10" width="280" height="100" rx="4" fill="none" stroke="#00FF88" strokeWidth="1.5" strokeDasharray="8,4" />
+            {[15, 25, 35].map((x, i) => (
+              <circle key={i} cx={x} cy="20" r="3" fill="#00FF88" />
+            ))}
           </svg>
-          <div style={{ position:'relative',zIndex:1 }}>
-            <div style={{ fontSize:40,marginBottom:12 }}>📂</div>
-            <div style={{ fontFamily:'Orbitron,monospace',fontSize:13,fontWeight:700,color: isDragActive ? '#00FF88' : '#8899BB',marginBottom:8 }}>
-              {isDragActive ? 'DROP FILES HERE' : 'DRAG & DROP GERBER FILES'}
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ fontSize: 34, marginBottom: 10 }}>FILES</div>
+            <div style={{ fontFamily: 'Orbitron,monospace', fontSize: 13, fontWeight: 700, color: isDragActive ? '#00FF88' : '#A4BCD5', marginBottom: 8 }}>
+              {isDragActive ? 'DROP FILES HERE' : 'DRAG AND DROP GERBER FILES'}
             </div>
-            <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:13,color:'#4a5568' }}>Accepts .zip, .rar, .gbr, .ger files</div>
-            <motion.button type="button" whileHover={{ scale:1.05 }} className="btn-outline" style={{ marginTop:16,fontSize:12,padding:'8px 20px' }}>Browse Files</motion.button>
+            <div style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 13, color: '#5e6f8f' }}>Accepts .zip, .rar, .gbr, .ger</div>
           </div>
         </div>
       </div>
 
       {data.files && data.files.length > 0 && (
         <div>
-          <label className="form-label">Uploaded Files</label>
-          <div style={{ display:'flex',flexDirection:'column',gap:8 }}>
-            {data.files.map((f,i) => (
-              <motion.div key={i} initial={{ opacity:0,x:-10 }} animate={{ opacity:1,x:0 }} transition={{ delay:i*0.05 }}
-                style={{ display:'flex',alignItems:'center',gap:12,padding:'10px 14px',background:'rgba(0,255,136,0.05)',border:'1px solid rgba(0,255,136,0.2)',borderRadius:6 }}>
-                <span style={{ fontSize:18 }}>📄</span>
-                <div style={{ flex:1,minWidth:0 }}>
-                  <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:14,color:'#F0F4FF',fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{f.name}</div>
-                  <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:12,color:'#8899BB' }}>{(f.size/1024).toFixed(1)} KB</div>
+          <label className="quote-field-label">Uploaded Files</label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {data.files.map((f, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.05 }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '10px 14px',
+                  background: 'rgba(0,255,136,0.05)',
+                  border: '1px solid rgba(0,255,136,0.2)',
+                  borderRadius: 6,
+                }}
+              >
+                <span style={{ fontSize: 16, color: '#00ff88' }}>OK</span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 14, color: '#F0F4FF', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</div>
+                  <div style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 12, color: '#8899BB' }}>{(f.size / 1024).toFixed(1)} KB</div>
                 </div>
-                <span style={{ color:'#00FF88',fontSize:18 }}>✓</span>
               </motion.div>
             ))}
           </div>
@@ -257,54 +427,70 @@ function Step3({ data, setData }) {
       )}
 
       <div>
-        <label className="form-label">Additional Notes</label>
-        <textarea className="form-input" rows={4} value={data.notes||''} onChange={e=>setData({...data,notes:e.target.value})} placeholder="Design revision notes, reference designators, special instructions..." style={{ resize:'vertical' }} />
+        <label className="quote-field-label">Additional Notes</label>
+        <textarea
+          className="quote-input"
+          rows={4}
+          value={data.notes || ''}
+          onChange={(e) => setData({ ...data, notes: e.target.value })}
+          placeholder="Any reference notes or special instructions..."
+          style={{ resize: 'vertical' }}
+        />
       </div>
     </div>
   )
 }
 
-function Step4({ data, setData }) {
+function Step4({ contact, setContact, pcb, asm }) {
   return (
-    <div style={{ display:'flex',flexDirection:'column',gap:20 }}>
-      <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:16 }}>
+    <div className="quote-step-basic">
+      <h2 className="quote-panel-title">Contact Details</h2>
+
+      <div className="quote-grid-2">
         <div>
-          <label className="form-label">Full Name *</label>
-          <input className="form-input" value={data.name||''} onChange={e=>setData({...data,name:e.target.value})} placeholder="Your full name" required />
+          <label className="quote-field-label">Full Name *</label>
+          <input className="quote-input" value={contact.name || ''} onChange={(e) => setContact({ ...contact, name: e.target.value })} placeholder="Your full name" required />
         </div>
         <div>
-          <label className="form-label">Company</label>
-          <input className="form-input" value={data.company||''} onChange={e=>setData({...data,company:e.target.value})} placeholder="Company name" />
+          <label className="quote-field-label">Company</label>
+          <input className="quote-input" value={contact.company || ''} onChange={(e) => setContact({ ...contact, company: e.target.value })} placeholder="Company name" />
         </div>
       </div>
+
       <div>
-        <label className="form-label">Email *</label>
-        <input className="form-input" type="email" value={data.email||''} onChange={e=>setData({...data,email:e.target.value})} placeholder="your@email.com" required />
+        <label className="quote-field-label">Email *</label>
+        <input className="quote-input" type="email" value={contact.email || ''} onChange={(e) => setContact({ ...contact, email: e.target.value })} placeholder="name@company.com" required />
       </div>
-      <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:16 }}>
+
+      <div className="quote-grid-2">
         <div>
-          <label className="form-label">Phone</label>
-          <input className="form-input" value={data.phone||''} onChange={e=>setData({...data,phone:e.target.value})} placeholder="+91 XXXXX XXXXX" />
+          <label className="quote-field-label">Phone</label>
+          <input className="quote-input" value={contact.phone || ''} onChange={(e) => setContact({ ...contact, phone: e.target.value })} placeholder="+91 XXXXX XXXXX" />
         </div>
         <div>
-          <label className="form-label">Country</label>
-          <select className="form-input" value={data.country||'India'} onChange={e=>setData({...data,country:e.target.value})}>
-            {['India','USA','UK','Germany','Australia','Singapore','UAE','Other'].map(c => <option key={c}>{c}</option>)}
+          <label className="quote-field-label">Country</label>
+          <select className="quote-input quote-select" value={contact.country || 'India'} onChange={(e) => setContact({ ...contact, country: e.target.value })}>
+            {['India', 'USA', 'UK', 'Germany', 'Australia', 'Singapore', 'UAE', 'Other'].map((c) => (
+              <option key={c}>{c}</option>
+            ))}
           </select>
         </div>
       </div>
-      {/* Summary */}
-      <div style={{ marginTop:8,padding:20,background:'rgba(0,255,136,0.05)',border:'1px solid rgba(0,255,136,0.15)',borderRadius:10 }}>
-        <div style={{ fontFamily:'Orbitron,monospace',fontSize:11,fontWeight:700,color:'#00FF88',letterSpacing:1,marginBottom:12 }}>ORDER SUMMARY</div>
-        <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:8 }}>
+
+      <div className="quote-summary">
+        <div className="quote-summary-title">ORDER SUMMARY</div>
+        <div className="quote-summary-grid">
           {[
-            ['Layers',data.pcb?.layers||'—'],['Size',`${data.pcb?.width||'—'}×${data.pcb?.height||'—'} mm`],
-            ['Quantity',data.pcb?.qty||'—'],['Thickness',data.pcb?.thickness||'—'],
-            ['Surface',data.pcb?.surface||'—'],['Assembly',data.asm?.assembly?'Yes':'No'],
-          ].map(([k,v],i) => (
-            <div key={i} style={{ display:'flex',justifyContent:'space-between',padding:'6px 0',borderBottom:'1px solid #1e2d47' }}>
-              <span style={{ fontFamily:'Rajdhani,sans-serif',fontSize:13,color:'#8899BB' }}>{k}</span>
-              <span style={{ fontFamily:'Rajdhani,sans-serif',fontSize:13,color:'#F0F4FF',fontWeight:600 }}>{v}</span>
+            ['Layers', pcb.layers || '-'],
+            ['Size', `${pcb.width || '-'} x ${pcb.height || '-'} mm`],
+            ['Quantity', pcb.qty || '-'],
+            ['Thickness', pcb.thickness || '-'],
+            ['Surface', pcb.surface || '-'],
+            ['Assembly', asm.assembly ? 'Yes' : 'No'],
+          ].map(([k, v], i) => (
+            <div key={i} className="quote-summary-row">
+              <span>{k}</span>
+              <strong>{v}</strong>
             </div>
           ))}
         </div>
@@ -315,93 +501,474 @@ function Step4({ data, setData }) {
 
 function Step5() {
   return (
-    <motion.div initial={{ opacity:0,scale:0.9 }} animate={{ opacity:1,scale:1 }} style={{ textAlign:'center',padding:'40px 0' }}>
-      <motion.div initial={{ scale:0 }} animate={{ scale:1 }} transition={{ delay:0.2,type:'spring',stiffness:200 }}
-        style={{ width:100,height:100,borderRadius:'50%',background:'rgba(0,255,136,0.1)',border:'3px solid #00FF88',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 24px',boxShadow:'0 0 40px rgba(0,255,136,0.3)',fontSize:40 }}>
-        ✅
-      </motion.div>
-      <motion.h2 initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.4 }}
-        style={{ fontFamily:'Orbitron,monospace',fontSize:22,fontWeight:800,color:'#00FF88',marginBottom:12 }}>
-        Quote Request Received!
-      </motion.h2>
-      <motion.p initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.55 }}
-        style={{ fontFamily:'Rajdhani,sans-serif',fontSize:16,color:'#8899BB',maxWidth:420,margin:'0 auto 28px',lineHeight:1.7 }}>
-        Thank you! Our engineering team will review your specifications and respond within <strong style={{ color:'#00FF88' }}>24 business hours</strong>.
-      </motion.p>
-      <motion.div initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.7 }}
-        style={{ display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap' }}>
-        <a href="/"><button className="btn-outline">← Back to Home</button></a>
-        <a href="/contact"><button className="btn-primary">Contact Us</button></a>
-      </motion.div>
+    <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} className="quote-done">
+      <div className="quote-done-check">OK</div>
+      <h2>Quote Request Received</h2>
+      <p>Our engineering team will review your details and get back within 24 business hours.</p>
+      <div className="quote-done-actions">
+        <a href="/">
+          <button className="btn-outline">Back to Home</button>
+        </a>
+        <a href="/contact">
+          <button className="btn-primary">Contact Us</button>
+        </a>
+      </div>
     </motion.div>
   )
 }
 
 export default function Quote() {
   const [step, setStep] = useState(0)
-  const [pcb, setPcb] = useState({ layers:'2',width:'',height:'',qty:10,thickness:'1.6mm',surface:'HASL',soldermask:'Green',silkscreen:'White' })
-  const [asm, setAsm] = useState({ assembly:false,assemblyType:'SMT',supply:'Customer Supplied',uniqueComps:'',specialReq:'' })
-  const [gerber, setGerber] = useState({ files:[],notes:'' })
-  const [contact, setContact] = useState({ name:'',company:'',email:'',phone:'',country:'India' })
+  const [pcb, setPcb] = useState({
+    layers: '2',
+    width: '100',
+    height: '80',
+    qty: 50,
+    thickness: '1.6mm',
+    surface: 'HASL',
+    soldermask: 'Green',
+    silkscreen: 'White',
+  })
+  const [asm, setAsm] = useState({
+    assembly: false,
+    assemblyType: 'SMT',
+    supply: 'Customer Supplied',
+    uniqueComps: '',
+    specialReq: '',
+  })
+  const [gerber, setGerber] = useState({ files: [], notes: '' })
+  const [contact, setContact] = useState({ name: '', company: '', email: '', phone: '', country: 'India' })
 
-  const canNext = () => {
-    if (step===0) return pcb.layers && pcb.width && pcb.height && pcb.qty
-    if (step===3) return contact.name && contact.email
+  const canNext = useMemo(() => {
+    if (step === 0) return pcb.layers && pcb.width && pcb.height && pcb.qty
+    if (step === 3) return contact.name && contact.email
     return true
-  }
+  }, [step, pcb, contact])
 
-  const slideVariants = { enter: dir => ({ x: dir>0?80:-80,opacity:0 }), center: { x:0,opacity:1 }, exit: dir => ({ x: dir>0?-80:80,opacity:0 }) }
+  const slideVariants = {
+    enter: (dir) => ({ x: dir > 0 ? 70 : -70, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir) => ({ x: dir > 0 ? -70 : 70, opacity: 0 }),
+  }
   const [dir, setDir] = useState(1)
 
-  const next = () => { if(step < steps.length-1) { setDir(1); setStep(s=>s+1) } }
-  const back = () => { if(step > 0) { setDir(-1); setStep(s=>s-1) } }
+  const next = () => {
+    if (step < steps.length - 1) {
+      setDir(1)
+      setStep((s) => s + 1)
+    }
+  }
+  const back = () => {
+    if (step > 0) {
+      setDir(-1)
+      setStep((s) => s - 1)
+    }
+  }
 
   return (
-    <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }}>
-      {/* Hero */}
-      <div className="page-hero" style={{ background:'linear-gradient(135deg,#0A0E1A,#0d1a2a)',minHeight:'30vh',paddingBottom:40 }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
+      <div className="page-hero" style={{ background: 'linear-gradient(135deg,#060B17,#09142b)', minHeight: '28vh', paddingBottom: 30 }}>
         <div className="circuit-bg" />
-        <div className="container" style={{ position:'relative',zIndex:1 }}>
-          <motion.div initial={{ opacity:0,y:30 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.2 }}>
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="section-eyebrow">Get Started</div>
-            <h1 className="section-title" style={{ fontSize:'clamp(28px,4vw,50px)' }}>Request a Quote</h1>
-            <p className="section-subtitle">Complete the form below and receive a competitive quote within 24 hours.</p>
+            <h1 className="section-title" style={{ fontSize: 'clamp(28px,4vw,50px)' }}>
+              Request a Quote
+            </h1>
+            <p className="section-subtitle">Complete this form and receive a response in 24 hours.</p>
           </motion.div>
         </div>
       </div>
 
-      <section className="section" style={{ paddingTop:40 }}>
+      <section className="section" style={{ paddingTop: 28 }}>
         <div className="circuit-bg" />
         <div className="container">
-          <div style={{ maxWidth:760,margin:'0 auto' }}>
+          <div className="quote-shell">
             <ProgressBar step={step} />
 
-            <div style={{ background:'rgba(17,24,39,0.8)',border:'1px solid #1e2d47',borderRadius:16,padding:36,overflow:'hidden',position:'relative' }}>
+            <div className="quote-main-panel">
               <AnimatePresence mode="wait" custom={dir}>
-                <motion.div key={step} custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit"
-                  transition={{ duration:0.35,ease:'easeInOut' }}>
-                  {step===0 && <Step1 data={pcb} setData={setPcb} />}
-                  {step===1 && <Step2 data={asm} setData={setAsm} />}
-                  {step===2 && <Step3 data={gerber} setData={setGerber} />}
-                  {step===3 && <Step4 data={{ pcb,asm,name:contact.name,company:contact.company,email:contact.email,phone:contact.phone,country:contact.country }} setData={d=>setContact({name:d.name||contact.name,company:d.company||contact.company,email:d.email||contact.email,phone:d.phone||contact.phone,country:d.country||contact.country})} />}
-                  {step===4 && <Step5 />}
+                <motion.div key={step} custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: 'easeInOut' }}>
+                  {step === 0 && <Step1 data={pcb} setData={setPcb} />}
+                  {step === 1 && <Step2 data={asm} setData={setAsm} />}
+                  {step === 2 && <Step3 data={gerber} setData={setGerber} />}
+                  {step === 3 && <Step4 contact={contact} setContact={setContact} pcb={pcb} asm={asm} />}
+                  {step === 4 && <Step5 />}
                 </motion.div>
               </AnimatePresence>
             </div>
 
-            {step < steps.length-1 && (
-              <div style={{ display:'flex',justifyContent:'space-between',marginTop:24 }}>
-                <motion.button whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }} onClick={back} disabled={step===0}
-                  className="btn-outline" style={{ opacity:step===0?0.3:1,pointerEvents:step===0?'none':'auto' }}>← Back</motion.button>
-                <motion.button whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }} onClick={next} disabled={!canNext()}
-                  className="btn-primary" style={{ opacity:canNext()?1:0.5,pointerEvents:canNext()?'auto':'none' }}>
-                  {step===steps.length-2 ? 'Submit Quote Request ✓' : 'Continue →'}
-                </motion.button>
+            {step < steps.length - 1 && (
+              <div className="quote-nav">
+                <button className="btn-outline" onClick={back} disabled={step === 0} style={{ opacity: step === 0 ? 0.4 : 1, pointerEvents: step === 0 ? 'none' : 'auto' }}>
+                  Back
+                </button>
+                <button className="btn-primary" onClick={next} disabled={!canNext} style={{ opacity: canNext ? 1 : 0.55, pointerEvents: canNext ? 'auto' : 'none' }}>
+                  {step === steps.length - 2 ? 'Submit Quote Request' : 'Continue'}
+                </button>
               </div>
             )}
           </div>
         </div>
       </section>
+
+      <style>{`
+        .quote-shell {
+          max-width: 1320px;
+          margin: 0 auto;
+        }
+        .quote-stepper {
+          display: grid;
+          grid-template-columns: repeat(5, minmax(84px, 1fr));
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+        .quote-step-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+        .quote-step-box {
+          width: 40px;
+          height: 40px;
+          border: 1px solid #2a3555;
+          background: rgba(8, 14, 31, 0.8);
+          color: #6d7da2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'Orbitron', monospace;
+          font-size: 19px;
+          line-height: 1;
+        }
+        .quote-step-box.active,
+        .quote-step-box.done {
+          border-color: #00ff9b;
+          color: #00ff9b;
+          box-shadow: 0 0 16px rgba(0, 255, 155, 0.2);
+        }
+        .quote-step-label {
+          font-family: 'Orbitron', monospace;
+          letter-spacing: 2px;
+          font-size: 10px;
+          color: #7e8eae;
+        }
+        .quote-step-label.active {
+          color: #00ff9b;
+        }
+        .quote-main-panel {
+          border: 1px solid #1f2a4a;
+          background: rgba(7, 15, 38, 0.84);
+          padding: 28px 30px;
+          min-height: 500px;
+        }
+        .quote-panel-title {
+          font-family: 'Orbitron', monospace;
+          font-size: clamp(20px, 2.5vw, 34px);
+          line-height: 1.1;
+          color: #f0f4ff;
+          margin: 0 0 20px;
+        }
+        .quote-step1-grid {
+          display: grid;
+          grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+          gap: 24px;
+          align-items: start;
+        }
+        .quote-step-basic {
+          display: flex;
+          flex-direction: column;
+          gap: 18px;
+        }
+        .quote-grid-2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 14px;
+          margin-bottom: 16px;
+        }
+        .quote-field-label {
+          display: block;
+          font-family: 'Orbitron', monospace;
+          font-size: 12px;
+          letter-spacing: 2px;
+          color: #90a5c8;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+        }
+        .quote-input {
+          width: 100%;
+          height: 48px;
+          background: #070f26;
+          border: 1px solid #253358;
+          border-radius: 0;
+          color: #f0f4ff;
+          font-size: 16px;
+          font-weight: 600;
+          padding: 0 14px;
+          font-family: 'Rajdhani', sans-serif;
+        }
+        .quote-input:focus {
+          outline: none;
+          border-color: #00ff9b;
+          box-shadow: 0 0 14px rgba(0, 255, 155, 0.18);
+        }
+        .quote-input::placeholder {
+          color: #5f7499;
+        }
+        .quote-select {
+          font-size: 16px;
+        }
+        .quote-qty-group {
+          display: grid;
+          grid-template-columns: 52px 1fr 52px;
+          gap: 0;
+          border: 1px solid #253358;
+          background: #070f26;
+        }
+        .quote-qty-btn {
+          border: 0;
+          border-right: 1px solid #253358;
+          background: transparent;
+          color: #00ff9b;
+          font-size: 28px;
+          cursor: pointer;
+          font-family: 'Orbitron', monospace;
+        }
+        .quote-qty-btn:last-child {
+          border-right: 0;
+          border-left: 1px solid #253358;
+        }
+        .quote-qty-input {
+          border: 0;
+          text-align: center;
+          background: transparent;
+        }
+        .quote-preset-row {
+          display: flex;
+          gap: 8px;
+          margin-top: 8px;
+          flex-wrap: wrap;
+        }
+        .quote-mini-btn {
+          min-width: 46px;
+          height: 28px;
+          border: 1px solid #253358;
+          background: #070f26;
+          color: #88a1c8;
+          font-family: 'Orbitron', monospace;
+          font-size: 11px;
+          cursor: pointer;
+        }
+        .quote-mini-btn.active {
+          color: #00ff9b;
+          border-color: #00ff9b;
+        }
+        .quote-chip-row {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+        .quote-chip {
+          height: 40px;
+          padding: 0 16px;
+          border: 1px solid #253358;
+          background: #070f26;
+          color: #96add1;
+          font-family: 'Orbitron', monospace;
+          font-size: 12px;
+          letter-spacing: 0.8px;
+          cursor: pointer;
+        }
+        .quote-chip.active {
+          border-color: #00ff9b;
+          background: #0df59a;
+          color: #03231a;
+          box-shadow: 0 0 18px rgba(0, 255, 155, 0.3);
+        }
+        .quote-swatch-row {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+        .quote-swatch {
+          width: 30px;
+          height: 30px;
+          border: 2px solid #344769;
+          border-radius: 3px;
+          cursor: pointer;
+        }
+        .quote-swatch.active {
+          border-color: #00ff9b;
+          box-shadow: 0 0 14px rgba(0, 255, 155, 0.25);
+        }
+        .quote-preview-card {
+          border: 1px solid #1f2d4f;
+          background: #070f26;
+          min-height: 100%;
+          padding: 16px 16px 18px;
+          display: flex;
+          flex-direction: column;
+        }
+        .quote-preview-label {
+          font-family: 'Orbitron', monospace;
+          color: #00ff9b;
+          letter-spacing: 2px;
+          font-size: 12px;
+          margin-bottom: 12px;
+        }
+        .quote-preview-board-wrap {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 12px;
+          min-height: 200px;
+        }
+        .quote-preview-board {
+          max-width: 100%;
+          border-radius: 4px;
+          filter: drop-shadow(0 0 22px rgba(0, 255, 155, 0.2));
+        }
+        .quote-preview-meta {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          font-family: 'Rajdhani', sans-serif;
+          color: #95a7c6;
+          font-size: 15px;
+          line-height: 1.55;
+        }
+        .quote-preview-meta span {
+          color: #00ff9b;
+          font-weight: 700;
+        }
+        .quote-toggle-row {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          margin-top: 8px;
+        }
+        .quote-toggle-text {
+          font-family: 'Rajdhani', sans-serif;
+          color: #a7bad7;
+          font-size: 16px;
+          letter-spacing: 0.2px;
+        }
+        .quote-summary {
+          margin-top: 6px;
+          border: 1px solid rgba(0, 255, 155, 0.2);
+          background: rgba(0, 255, 155, 0.05);
+          padding: 12px 14px;
+        }
+        .quote-summary-title {
+          font-family: 'Orbitron', monospace;
+          letter-spacing: 1.2px;
+          font-size: 11px;
+          color: #00ff9b;
+          margin-bottom: 8px;
+        }
+        .quote-summary-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px 16px;
+        }
+        .quote-summary-row {
+          display: flex;
+          justify-content: space-between;
+          border-bottom: 1px solid rgba(42, 64, 99, 0.6);
+          padding-bottom: 4px;
+          font-family: 'Rajdhani', sans-serif;
+          color: #93a7c7;
+          font-size: 14px;
+        }
+        .quote-summary-row strong {
+          color: #f0f4ff;
+        }
+        .quote-done {
+          text-align: center;
+          padding: 22px 0 8px;
+        }
+        .quote-done-check {
+          width: 76px;
+          height: 76px;
+          margin: 0 auto 14px;
+          border-radius: 50%;
+          border: 2px solid #00ff9b;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #00ff9b;
+          box-shadow: 0 0 26px rgba(0, 255, 155, 0.3);
+          font-family: 'Orbitron', monospace;
+          font-size: 15px;
+          font-weight: 700;
+        }
+        .quote-done h2 {
+          margin: 0 0 8px;
+          font-family: 'Orbitron', monospace;
+          color: #00ff9b;
+          font-size: 23px;
+        }
+        .quote-done p {
+          margin: 0 auto 20px;
+          max-width: 560px;
+          color: #95a7c6;
+          font-family: 'Rajdhani', sans-serif;
+          font-size: 16px;
+          line-height: 1.6;
+        }
+        .quote-done-actions {
+          display: flex;
+          justify-content: center;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        .quote-nav {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 14px;
+        }
+        @media (max-width: 1160px) {
+          .quote-step1-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+        @media (max-width: 980px) {
+          .quote-main-panel {
+            padding: 18px 14px;
+          }
+          .quote-panel-title {
+            font-size: clamp(18px, 5.6vw, 30px);
+            margin-bottom: 12px;
+          }
+          .quote-grid-2 {
+            grid-template-columns: 1fr;
+            gap: 14px;
+          }
+          .quote-input {
+            font-size: 15px;
+            height: 44px;
+          }
+          .quote-stepper {
+            grid-template-columns: repeat(5, minmax(56px, 1fr));
+          }
+          .quote-step-label {
+            font-size: 9px;
+            letter-spacing: 1.2px;
+          }
+          .quote-step-box {
+            width: 34px;
+            height: 34px;
+            font-size: 16px;
+          }
+          .quote-preview-meta {
+            font-size: 14px;
+          }
+          .quote-summary-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
     </motion.div>
   )
 }
