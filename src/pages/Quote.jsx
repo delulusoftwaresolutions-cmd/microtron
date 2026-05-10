@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDropzone } from 'react-dropzone'
+import { addQuoteRequest } from '../utils/adminStore'
 
 const steps = ['PCB SPECS', 'ASSEMBLY', 'FILES', 'CONTACT', 'DONE']
 
@@ -22,6 +23,27 @@ const SILKSCREEN = [
 const ASSEMBLY_TYPE = ['SMT', 'THT', 'Mixed']
 const SUPPLY = ['Customer Supplied', 'Microtron Sourced', 'Mixed']
 const QTY_PRESETS = [10, 50, 100, 500, 1000]
+const BOARD_MIN_MM = 10
+const BOARD_MAX_MM = 500
+const PREVIEW_MIN_W = 130
+const PREVIEW_MAX_W = 260
+const PREVIEW_MIN_H = 92
+const PREVIEW_MAX_H = 190
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value))
+}
+
+function parseBoardDimension(rawValue, fallback) {
+  const parsed = Number(rawValue)
+  if (!Number.isFinite(parsed)) return fallback
+  return clamp(parsed, BOARD_MIN_MM, BOARD_MAX_MM)
+}
+
+function mapRange(value, inMin, inMax, outMin, outMax) {
+  const ratio = (value - inMin) / (inMax - inMin)
+  return outMin + ratio * (outMax - outMin)
+}
 
 function ProgressBar({ step }) {
   return (
@@ -43,10 +65,10 @@ function ProgressBar({ step }) {
 }
 
 function Step1({ data, setData }) {
-  const width = Number(data.width || 100)
-  const height = Number(data.height || 80)
-  const previewW = Math.max(130, Math.min(250, width * 1.8))
-  const previewH = Math.max(92, Math.min(180, height * 1.8))
+  const width = parseBoardDimension(data.width, 100)
+  const height = parseBoardDimension(data.height, 80)
+  const previewW = mapRange(width, BOARD_MIN_MM, BOARD_MAX_MM, PREVIEW_MIN_W, PREVIEW_MAX_W)
+  const previewH = mapRange(height, BOARD_MIN_MM, BOARD_MAX_MM, PREVIEW_MIN_H, PREVIEW_MAX_H)
   const maskTheme = {
     Green: { board: '#0d5428', border: '#00ff9d', inner: 'rgba(163,220,192,0.25)', holeStroke: '#7fa0d1' },
     Red: { board: '#5e1010', border: '#ff7070', inner: 'rgba(255,188,188,0.25)', holeStroke: '#ffb2b2' },
@@ -223,11 +245,14 @@ function Step1({ data, setData }) {
         <div className="quote-preview-board-wrap">
           <motion.svg
             viewBox="0 0 280 200"
-            width={previewW}
-            height={previewH}
             className="quote-preview-board"
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.25 }}
+            preserveAspectRatio="none"
+            animate={{ width: previewW, height: previewH, opacity: 1 }}
+            transition={{
+              width: { type: 'spring', stiffness: 170, damping: 20, mass: 0.75 },
+              height: { type: 'spring', stiffness: 170, damping: 20, mass: 0.75 },
+              opacity: { duration: 0.2 },
+            }}
           >
             <rect x="22" y="18" width="236" height="164" rx="6" fill={activeMask.board} stroke={activeMask.border} strokeWidth="1.5" />
             <rect x="28" y="24" width="224" height="152" rx="4" fill="none" stroke={activeMask.inner} strokeDasharray="4 5" />
@@ -499,12 +524,17 @@ function Step4({ contact, setContact, pcb, asm }) {
   )
 }
 
-function Step5() {
+function Step5({ quoteId }) {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} className="quote-done">
       <div className="quote-done-check">OK</div>
       <h2>Quote Request Received</h2>
       <p>Our engineering team will review your details and get back within 24 business hours.</p>
+      {quoteId && (
+        <p style={{ marginTop: 4, marginBottom: 20 }}>
+          Reference ID: <strong>{quoteId}</strong>
+        </p>
+      )}
       <div className="quote-done-actions">
         <a href="/">
           <button className="btn-outline">Back to Home</button>
@@ -538,6 +568,7 @@ export default function Quote() {
   })
   const [gerber, setGerber] = useState({ files: [], notes: '' })
   const [contact, setContact] = useState({ name: '', company: '', email: '', phone: '', country: 'India' })
+  const [submittedQuoteId, setSubmittedQuoteId] = useState('')
 
   const canNext = useMemo(() => {
     if (step === 0) return pcb.layers && pcb.width && pcb.height && pcb.qty
@@ -554,6 +585,10 @@ export default function Quote() {
 
   const next = () => {
     if (step < steps.length - 1) {
+      if (step === steps.length - 2) {
+        const saved = addQuoteRequest({ pcb, asm, gerber, contact })
+        setSubmittedQuoteId(saved?.id || '')
+      }
       setDir(1)
       setStep((s) => s + 1)
     }
@@ -593,7 +628,7 @@ export default function Quote() {
                   {step === 1 && <Step2 data={asm} setData={setAsm} />}
                   {step === 2 && <Step3 data={gerber} setData={setGerber} />}
                   {step === 3 && <Step4 contact={contact} setContact={setContact} pcb={pcb} asm={asm} />}
-                  {step === 4 && <Step5 />}
+                  {step === 4 && <Step5 quoteId={submittedQuoteId} />}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -825,8 +860,10 @@ export default function Quote() {
           min-height: 200px;
         }
         .quote-preview-board {
+          display: block;
           max-width: 100%;
           border-radius: 4px;
+          will-change: width, height;
           filter: drop-shadow(0 0 22px rgba(0, 255, 155, 0.2));
         }
         .quote-preview-meta {

@@ -92,7 +92,27 @@ export default function Footer() {
           <span style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 13, color: '#2d3f5a' }}>
             © 2025 Microtron India Technologies Pvt. Ltd. All rights reserved.
           </span>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+            <Link to="/admin" style={{ textDecoration: 'none' }}>
+              <motion.button
+                whileHover={{ scale: 1.03, boxShadow: '0 0 20px rgba(0,255,136,0.35)' }}
+                whileTap={{ scale: 0.98 }}
+                style={{
+                  border: '1px solid #00ff88',
+                  background: 'transparent',
+                  color: '#00ff88',
+                  padding: '8px 14px',
+                  borderRadius: 4,
+                  fontFamily: 'Orbitron,monospace',
+                  fontSize: 10,
+                  letterSpacing: 1,
+                  cursor: 'pointer',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Admin Login
+              </motion.button>
+            </Link>
             <div style={{ width: 6, height: 6, background: '#00FF88', borderRadius: '50%', boxShadow: '0 0 8px #00FF88', animation: 'ledPulse 2s ease infinite' }} />
             <span style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 12, color: '#2d3f5a', letterSpacing: 1 }}>SYSTEMS ONLINE</span>
           </div>

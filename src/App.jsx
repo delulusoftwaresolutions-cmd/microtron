@@ -10,6 +10,7 @@ import Services from './pages/Services'
 import Clients from './pages/Clients'
 import Quote from './pages/Quote'
 import Contact from './pages/Contact'
+import Admin from './pages/Admin'
 
 function CustomCursor() {
   const cursorRef = useRef(null)
@@ -42,6 +43,7 @@ function AnimatedRoutes() {
         <Route path="/clients" element={<Clients />} />
         <Route path="/quote" element={<Quote />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </AnimatePresence>
   )

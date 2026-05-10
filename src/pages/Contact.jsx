@@ -1,11 +1,12 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { gsap } from 'gsap'
+import { addEnquiry } from '../utils/adminStore'
 
 const subjects = ['General Inquiry','Request a Quote','Technical Support','Partnership','Other']
 
 export default function Contact() {
-  const [form, setForm] = useState({ name:'',email:'',phone:'',subject:'General Inquiry',message:'' })
+  const [form, setForm] = useState({ name:'',company:'',email:'',phone:'',subject:'General Inquiry',message:'' })
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
   const planeRef = useRef(null)
@@ -13,6 +14,7 @@ export default function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault()
     setSending(true)
+    addEnquiry({ ...form, source: 'contact' })
     if (planeRef.current) {
       gsap.to(planeRef.current, { x: 150, y: -80, opacity: 0, duration: 0.8, ease: 'power2.in', onComplete: () => {
         setSending(false)
@@ -53,7 +55,7 @@ export default function Contact() {
                     <div style={{ fontSize:56,marginBottom:16 }}>✅</div>
                     <h3 style={{ fontFamily:'Orbitron,monospace',fontSize:18,fontWeight:700,color:'#00FF88',marginBottom:8 }}>Message Sent!</h3>
                     <p style={{ fontFamily:'Rajdhani,sans-serif',fontSize:15,color:'#8899BB' }}>Our team will reach out to you shortly.</p>
-                    <motion.button whileHover={{ scale:1.05 }} onClick={() => { setSent(false); setForm({ name:'',email:'',phone:'',subject:'General Inquiry',message:'' }) }}
+                    <motion.button whileHover={{ scale:1.05 }} onClick={() => { setSent(false); setForm({ name:'',company:'',email:'',phone:'',subject:'General Inquiry',message:'' }) }}
                       className="btn-outline" style={{ marginTop:24 }}>Send Another</motion.button>
                   </motion.div>
                 ) : (
@@ -64,13 +66,19 @@ export default function Contact() {
                         <input className="form-input" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Your full name" required />
                       </div>
                       <div>
+                        <label className="form-label">Company</label>
+                        <input className="form-input" value={form.company} onChange={e=>setForm({...form,company:e.target.value})} placeholder="Company name" />
+                      </div>
+                    </div>
+                    <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:16 }}>
+                      <div>
+                        <label className="form-label">Email *</label>
+                        <input className="form-input" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="your@email.com" required />
+                      </div>
+                      <div>
                         <label className="form-label">Phone</label>
                         <input className="form-input" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="+91 XXXXX XXXXX" />
                       </div>
-                    </div>
-                    <div>
-                      <label className="form-label">Email *</label>
-                      <input className="form-input" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="your@email.com" required />
                     </div>
                     <div>
                       <label className="form-label">Subject</label>
