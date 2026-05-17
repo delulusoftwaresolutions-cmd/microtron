@@ -69,6 +69,16 @@ function AnimatedRoutes() {
   )
 }
 
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [pathname])
+
+  return null
+}
+
 export default function App() {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('theme')
@@ -83,6 +93,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <CustomCursor />
       <Navbar
         theme={theme}
