@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDropzone } from 'react-dropzone'
 import { addQuoteRequest } from '../utils/adminStore'
@@ -273,7 +273,7 @@ function Step1({ data, setData }) {
             </g>
             <circle cx="140" cy="100" r="5.5" fill="#082035" stroke={centerAccent} />
             <path d="M140 72 V130 M114 100 H166" stroke={centerAccent} strokeWidth="1.1" opacity="0.85" />
-            <text x="140" y="176" textAnchor="middle" fill={activeSilk} opacity="0.85" fontSize="12" fontFamily="Orbitron,monospace">
+            <text x="140" y="176" textAnchor="middle" fill={activeSilk} opacity="0.85" fontSize="12" fontFamily="Manrope,sans-serif">
               {`${width} x ${height} mm - ${data.layers}L`}
             </text>
           </motion.svg>
@@ -412,10 +412,10 @@ function Step3({ data, setData }) {
           </svg>
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{ fontSize: 34, marginBottom: 10 }}>FILES</div>
-            <div style={{ fontFamily: 'Orbitron,monospace', fontSize: 13, fontWeight: 700, color: isDragActive ? '#00FF88' : '#A4BCD5', marginBottom: 8 }}>
+            <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 13, fontWeight: 700, color: isDragActive ? '#00FF88' : '#A4BCD5', marginBottom: 8 }}>
               {isDragActive ? 'DROP FILES HERE' : 'DRAG AND DROP GERBER FILES'}
             </div>
-            <div style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 13, color: '#5e6f8f' }}>Accepts .zip, .rar, .gbr, .ger</div>
+            <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 13, color: '#5e6f8f' }}>Accepts .zip, .rar, .gbr, .ger</div>
           </div>
         </div>
       </div>
@@ -442,8 +442,8 @@ function Step3({ data, setData }) {
               >
                 <span style={{ fontSize: 16, color: '#00ff88' }}>OK</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 14, color: '#F0F4FF', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</div>
-                  <div style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 12, color: '#8899BB' }}>{(f.size / 1024).toFixed(1)} KB</div>
+                  <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 14, color: 'var(--text-primary)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</div>
+                  <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 12, color: 'var(--text-secondary)' }}>{(f.size / 1024).toFixed(1)} KB</div>
                 </div>
               </motion.div>
             ))}
@@ -602,12 +602,12 @@ export default function Quote() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-      <div className="page-hero" style={{ background: 'linear-gradient(135deg,#060B17,#09142b)', minHeight: '28vh', paddingBottom: 30 }}>
+      <div className="page-hero" style={{ background: '#060B17', minHeight: '28vh', paddingBottom: 30 }}>
         <div className="circuit-bg" />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="section-eyebrow">Get Started</div>
-            <h1 className="section-title" style={{ fontSize: 'clamp(28px,4vw,50px)' }}>
+            <h1 className="section-title" style={{ fontSize: 'clamp(22px,3.4vw,38px)' }}>
               Request a Quote
             </h1>
             <p className="section-subtitle">Complete this form and receive a response in 24 hours.</p>
@@ -673,7 +673,7 @@ export default function Quote() {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           font-size: 19px;
           line-height: 1;
         }
@@ -684,7 +684,7 @@ export default function Quote() {
           box-shadow: 0 0 16px rgba(0, 255, 155, 0.2);
         }
         .quote-step-label {
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           letter-spacing: 2px;
           font-size: 10px;
           color: #7e8eae;
@@ -699,7 +699,7 @@ export default function Quote() {
           min-height: 500px;
         }
         .quote-panel-title {
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           font-size: clamp(20px, 2.5vw, 34px);
           line-height: 1.1;
           color: #f0f4ff;
@@ -724,7 +724,7 @@ export default function Quote() {
         }
         .quote-field-label {
           display: block;
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           font-size: 12px;
           letter-spacing: 2px;
           color: #90a5c8;
@@ -741,7 +741,7 @@ export default function Quote() {
           font-size: 16px;
           font-weight: 600;
           padding: 0 14px;
-          font-family: 'Rajdhani', sans-serif;
+          font-family: 'Source Sans 3', sans-serif;
         }
         .quote-input:focus {
           outline: none;
@@ -768,7 +768,7 @@ export default function Quote() {
           color: #00ff9b;
           font-size: 28px;
           cursor: pointer;
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
         }
         .quote-qty-btn:last-child {
           border-right: 0;
@@ -791,7 +791,7 @@ export default function Quote() {
           border: 1px solid #253358;
           background: #070f26;
           color: #88a1c8;
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           font-size: 11px;
           cursor: pointer;
         }
@@ -810,7 +810,7 @@ export default function Quote() {
           border: 1px solid #253358;
           background: #070f26;
           color: #96add1;
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           font-size: 12px;
           letter-spacing: 0.8px;
           cursor: pointer;
@@ -846,7 +846,7 @@ export default function Quote() {
           flex-direction: column;
         }
         .quote-preview-label {
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           color: #00ff9b;
           letter-spacing: 2px;
           font-size: 12px;
@@ -870,7 +870,7 @@ export default function Quote() {
           display: flex;
           flex-direction: column;
           gap: 2px;
-          font-family: 'Rajdhani', sans-serif;
+          font-family: 'Source Sans 3', sans-serif;
           color: #95a7c6;
           font-size: 15px;
           line-height: 1.55;
@@ -886,7 +886,7 @@ export default function Quote() {
           margin-top: 8px;
         }
         .quote-toggle-text {
-          font-family: 'Rajdhani', sans-serif;
+          font-family: 'Source Sans 3', sans-serif;
           color: #a7bad7;
           font-size: 16px;
           letter-spacing: 0.2px;
@@ -898,7 +898,7 @@ export default function Quote() {
           padding: 12px 14px;
         }
         .quote-summary-title {
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           letter-spacing: 1.2px;
           font-size: 11px;
           color: #00ff9b;
@@ -914,7 +914,7 @@ export default function Quote() {
           justify-content: space-between;
           border-bottom: 1px solid rgba(42, 64, 99, 0.6);
           padding-bottom: 4px;
-          font-family: 'Rajdhani', sans-serif;
+          font-family: 'Source Sans 3', sans-serif;
           color: #93a7c7;
           font-size: 14px;
         }
@@ -936,13 +936,13 @@ export default function Quote() {
           justify-content: center;
           color: #00ff9b;
           box-shadow: 0 0 26px rgba(0, 255, 155, 0.3);
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           font-size: 15px;
           font-weight: 700;
         }
         .quote-done h2 {
           margin: 0 0 8px;
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           color: #00ff9b;
           font-size: 23px;
         }
@@ -950,7 +950,7 @@ export default function Quote() {
           margin: 0 auto 20px;
           max-width: 560px;
           color: #95a7c6;
-          font-family: 'Rajdhani', sans-serif;
+          font-family: 'Source Sans 3', sans-serif;
           font-size: 16px;
           line-height: 1.6;
         }
@@ -1005,7 +1005,41 @@ export default function Quote() {
             grid-template-columns: 1fr;
           }
         }
+        @media (max-width: 640px) {
+          .quote-main-panel {
+            min-height: auto;
+            padding: 16px 12px;
+          }
+          .quote-stepper {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding-bottom: 6px;
+            scrollbar-width: thin;
+          }
+          .quote-step-item {
+            min-width: 62px;
+          }
+          .quote-nav {
+            flex-direction: column-reverse;
+            gap: 10px;
+          }
+          .quote-nav .btn-primary,
+          .quote-nav .btn-outline {
+            width: 100%;
+            justify-content: center;
+          }
+          .quote-chip {
+            height: 36px;
+            font-size: 11px;
+            padding: 0 12px;
+          }
+        }
       `}</style>
     </motion.div>
   )
 }
+
+
+
+

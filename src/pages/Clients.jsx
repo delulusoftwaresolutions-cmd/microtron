@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+﻿import { motion } from 'framer-motion'
 
 const sectors = [
   { icon: '🚗', label: 'Automotive' },
@@ -52,25 +52,25 @@ export default function Clients() {
   return (
     <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }}>
       {/* Hero */}
-      <div className="page-hero" style={{ background:'linear-gradient(135deg,#0A0E1A,#0d1a2a)' }}>
+      <div className="page-hero" style={{ background:'var(--bg-primary)' }}>
         <div className="circuit-bg" />
-        <div style={{ position:'absolute',inset:0,background:'radial-gradient(ellipse at 50% 50%,rgba(0,255,136,0.07) 0%,transparent 60%)' }} />
+        <div style={{ position:'absolute',inset:0,background:'var(--surface-soft)' }} />
         <div className="container" style={{ position:'relative',zIndex:1,textAlign:'center' }}>
           <motion.div initial={{ opacity:0,y:30 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.2 }}>
             <div className="section-eyebrow" style={{ justifyContent:'center' }}>Our Clients</div>
-            <h1 className="section-title" style={{ fontSize:'clamp(32px,5vw,60px)' }}>Trusted by Industry Leaders</h1>
+            <h1 className="section-title" style={{ fontSize:'clamp(24px,3.6vw,42px)' }}>Trusted by Industry Leaders</h1>
             <p className="section-subtitle" style={{ margin:'0 auto' }}>Building long-term partnerships across automotive, industrial, IoT, and energy sectors.</p>
           </motion.div>
         </div>
       </div>
 
       {/* Marquees */}
-      <section style={{ padding:'60px 0',overflow:'hidden',background:'#070B15',borderTop:'1px solid #1e2d47' }}>
+      <section style={{ padding:'60px 0',overflow:'hidden',background:'var(--bg-secondary)',borderTop:'1px solid var(--border-color)' }}>
         <div style={{ marginBottom:16,overflow:'hidden' }}>
           <div className="marquee-track" style={{ display:'flex',gap:16,width:'max-content' }}>
             {[...row1,...row1].map((c,i) => (
-              <motion.div key={i} whileHover={{ borderColor:'#00FF88',color:'#00FF88' }}
-                style={{ padding:'14px 28px',background:'rgba(17,24,39,0.8)',border:'1px solid #1e2d47',borderRadius:8,fontFamily:'Orbitron,monospace',fontSize:11,fontWeight:700,color:'#4a5568',letterSpacing:1,whiteSpace:'nowrap',transition:'all 0.3s',cursor:'default' }}>
+              <motion.div key={i} className="clients-marquee-chip" whileHover={{ borderColor:'#00FF88',color:'#00FF88' }}
+                style={{ padding:'14px 28px',background:'var(--surface-strong)',border:'1px solid var(--border-color)',borderRadius:8,fontFamily:'Manrope,sans-serif',fontSize:11,fontWeight:700,color:'var(--text-muted)',letterSpacing:1,whiteSpace:'nowrap',transition:'all 0.3s',cursor:'default' }}>
                 {c}
               </motion.div>
             ))}
@@ -79,8 +79,8 @@ export default function Clients() {
         <div style={{ overflow:'hidden' }}>
           <div className="marquee-track-reverse" style={{ display:'flex',gap:16,width:'max-content' }}>
             {[...row2,...row2].map((c,i) => (
-              <motion.div key={i} whileHover={{ borderColor:'#00D4FF',color:'#00D4FF' }}
-                style={{ padding:'14px 28px',background:'rgba(17,24,39,0.8)',border:'1px solid #1e2d47',borderRadius:8,fontFamily:'Orbitron,monospace',fontSize:11,fontWeight:700,color:'#4a5568',letterSpacing:1,whiteSpace:'nowrap',transition:'all 0.3s',cursor:'default' }}>
+              <motion.div key={i} className="clients-marquee-chip" whileHover={{ borderColor:'#00D4FF',color:'#00D4FF' }}
+                style={{ padding:'14px 28px',background:'var(--surface-strong)',border:'1px solid var(--border-color)',borderRadius:8,fontFamily:'Manrope,sans-serif',fontSize:11,fontWeight:700,color:'var(--text-muted)',letterSpacing:1,whiteSpace:'nowrap',transition:'all 0.3s',cursor:'default' }}>
                 {c}
               </motion.div>
             ))}
@@ -110,28 +110,29 @@ export default function Clients() {
       </section>
 
       {/* Case Studies */}
-      <section className="section" style={{ background:'#070B15' }}>
+      <section className="section" style={{ background:'var(--bg-secondary)' }}>
         <div className="container">
           <div style={{ textAlign:'center',marginBottom:48 }}>
             <div className="section-eyebrow" style={{ justifyContent:'center' }}>Case Studies</div>
             <h2 className="section-title">Real Projects. Real Results.</h2>
           </div>
-          <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))',gap:24 }}>
+          <div className="clients-case-grid" style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))',gap:24 }}>
             {caseStudies.map((cs,i) => (
               <motion.div key={i} initial={{ opacity:0,y:30 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1 }}
                 whileHover={{ y:-6,boxShadow:`0 20px 40px ${cs.color}18` }}
-                style={{ padding:32,background:'rgba(17,24,39,0.8)',border:`1px solid ${cs.color}22`,borderRadius:12,transition:'all 0.3s' }}>
+                className="clients-case-card"
+                style={{ padding:32,background:'var(--surface-strong)',border:`1px solid ${cs.color}22`,borderRadius:12,transition:'all 0.3s' }}>
                 <div style={{ display:'flex',alignItems:'center',gap:12,marginBottom:20 }}>
                   <div style={{ fontSize:32 }}>{cs.icon}</div>
                   <span className="chip" style={{ background:`${cs.color}15`,borderColor:`${cs.color}33`,color:cs.color }}>{cs.industry}</span>
                 </div>
-                <h3 style={{ fontFamily:'Orbitron,monospace',fontSize:14,fontWeight:700,color:'#F0F4FF',marginBottom:12,lineHeight:1.4 }}>{cs.title}</h3>
-                <p style={{ fontFamily:'Rajdhani,sans-serif',fontSize:14,color:'#8899BB',lineHeight:1.7,marginBottom:20 }}>{cs.desc}</p>
+                <h3 style={{ fontFamily:'Manrope,sans-serif',fontSize:14,fontWeight:700,color:'var(--text-primary)',marginBottom:12,lineHeight:1.4 }}>{cs.title}</h3>
+                <p style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:14,color:'var(--text-secondary)',lineHeight:1.7,marginBottom:20 }}>{cs.desc}</p>
                 <div style={{ display:'flex',flexDirection:'column',gap:8 }}>
                   {cs.metrics.map((m,j) => (
                     <div key={j} style={{ display:'flex',alignItems:'center',gap:8 }}>
                       <div style={{ width:6,height:6,borderRadius:'50%',background:cs.color,boxShadow:`0 0 6px ${cs.color}`,flexShrink:0 }} />
-                      <span style={{ fontFamily:'Rajdhani,sans-serif',fontSize:14,fontWeight:600,color:cs.color }}>{m}</span>
+                      <span style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:14,fontWeight:600,color:cs.color }}>{m}</span>
                     </div>
                   ))}
                 </div>
@@ -142,14 +143,14 @@ export default function Clients() {
       </section>
 
       {/* CTA */}
-      <section style={{ padding:'70px 0',background:'linear-gradient(135deg,#0A0E1A,#0d1a2a)',position:'relative' }}>
+      <section style={{ padding:'70px 0',background:'var(--bg-primary)',position:'relative' }}>
         <div className="circuit-bg" />
         <div className="container" style={{ textAlign:'center',position:'relative',zIndex:1 }}>
           <motion.div initial={{ opacity:0,y:20 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }}>
-            <h2 style={{ fontFamily:'Orbitron,monospace',fontSize:'clamp(24px,3vw,40px)',fontWeight:800,marginBottom:16 }}>
+            <h2 style={{ fontFamily:'Manrope,sans-serif',fontSize:'clamp(24px,3vw,40px)',fontWeight:800,marginBottom:16 }}>
               Become Our Next <span style={{ color:'#00FF88' }}>Success Story</span>
             </h2>
-            <p style={{ fontFamily:'Rajdhani,sans-serif',fontSize:16,color:'#8899BB',marginBottom:32 }}>Let's discuss your project and see how Microtron can deliver results.</p>
+            <p style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:16,color:'var(--text-secondary)',marginBottom:32 }}>Let's discuss your project and see how Microtron can deliver results.</p>
             <div style={{ display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap' }}>
               <a href="/contact"><motion.button whileHover={{ scale:1.05 }} className="btn-primary">Contact Us →</motion.button></a>
               <a href="/quote"><motion.button whileHover={{ scale:1.05 }} className="btn-outline">Get a Quote</motion.button></a>
@@ -157,6 +158,20 @@ export default function Clients() {
           </motion.div>
         </div>
       </section>
+
+      <style>{`
+        @media(max-width:640px){
+          .clients-marquee-chip{padding:10px 18px!important}
+          .clients-case-grid{grid-template-columns:1fr!important;gap:16px!important}
+          .clients-case-card{padding:22px!important}
+        }
+      `}</style>
     </motion.div>
   )
 }
+
+
+
+
+
+

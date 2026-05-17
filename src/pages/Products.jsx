@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const categories = ['All','PCB','Assembly','Wire Harness','GPS Devices','BLDC & BMS']
@@ -170,13 +170,13 @@ export default function Products() {
   return (
     <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }}>
       {/* Hero */}
-      <div className="page-hero" style={{ background:'linear-gradient(135deg,#0A0E1A,#0d1a2a)' }}>
+      <div className="page-hero" style={{ background:'var(--bg-primary)' }}>
         <div className="circuit-bg" />
-        <div style={{ position:'absolute',inset:0,background:'radial-gradient(ellipse at 60% 50%,rgba(0,212,255,0.06) 0%,transparent 60%)' }} />
+        <div style={{ position:'absolute',inset:0,background:'var(--surface-soft)' }} />
         <div className="container" style={{ position:'relative',zIndex:1 }}>
           <motion.div initial={{ opacity:0,y:30 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.2 }}>
             <div className="section-eyebrow">Products</div>
-            <h1 className="section-title" style={{ fontSize:'clamp(32px,5vw,60px)' }}>Our Product Range</h1>
+            <h1 className="section-title" style={{ fontSize:'clamp(24px,3.6vw,42px)' }}>Our Product Range</h1>
             <p className="section-subtitle">From single-layer PCBs to complex multilayer assemblies, GPS devices to BLDC motors.</p>
           </motion.div>
         </div>
@@ -186,7 +186,7 @@ export default function Products() {
         <div className="circuit-bg" />
         <div className="container">
           {/* Filters */}
-          <div style={{ display:'flex',gap:10,flexWrap:'wrap',marginBottom:40 }}>
+          <div className="products-filter-row" style={{ display:'flex',gap:10,flexWrap:'wrap',marginBottom:40 }}>
             {categories.map(cat => (
               <motion.button key={cat} whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
                 className={`filter-tab ${active===cat?'active':''}`} onClick={() => setActive(cat)}>
@@ -196,24 +196,24 @@ export default function Products() {
           </div>
 
           {/* Grid */}
-          <motion.div layout style={{ display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:24 }}>
+          <motion.div className="products-grid" layout style={{ display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:24 }}>
             <AnimatePresence>
               {filtered.map((p,i) => (
                 <motion.div key={p.name} layout initial={{ opacity:0,scale:0.9 }} animate={{ opacity:1,scale:1 }} exit={{ opacity:0,scale:0.9 }} transition={{ duration:0.3,delay:i*0.05 }}
                   whileHover={{ y:-6,boxShadow:'0 20px 40px rgba(0,255,136,0.12)',borderColor:'rgba(0,255,136,0.4)' }}
-                  className="glass-card" style={{ padding:28,cursor:'pointer',overflow:'hidden',position:'relative' }}>
+                  className="glass-card products-card" style={{ padding:28,cursor:'pointer',overflow:'hidden',position:'relative' }}>
                   <div style={{ display:'flex',justifyContent:'center',marginBottom:20,marginTop:2 }}>
                     <ProductArtwork product={p} />
                   </div>
                   <div className="chip" style={{ marginBottom:12 }}>{p.cat}</div>
-                  <h3 style={{ fontFamily:'Orbitron,monospace',fontSize:14,fontWeight:700,color:'#F0F4FF',marginBottom:10 }}>{p.name}</h3>
-                  <p style={{ fontFamily:'Rajdhani,sans-serif',fontSize:14,color:'#8899BB',lineHeight:1.5,marginBottom:16 }}>{p.desc}</p>
+                  <h3 style={{ fontFamily:'Manrope,sans-serif',fontSize:14,fontWeight:700,color:'var(--text-primary)',marginBottom:10 }}>{p.name}</h3>
+                  <p style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:14,color:'var(--text-secondary)',lineHeight:1.5,marginBottom:16 }}>{p.desc}</p>
                   <div style={{ display:'flex',flexWrap:'wrap',gap:6,marginBottom:20 }}>
                     {p.specs.map((s,j) => (
-                      <span key={j} style={{ padding:'3px 10px',background:'rgba(0,212,255,0.08)',border:'1px solid rgba(0,212,255,0.2)',borderRadius:4,fontSize:11,fontFamily:'Rajdhani,sans-serif',fontWeight:600,color:'#00D4FF',letterSpacing:0.5 }}>{s}</span>
+                      <span key={j} style={{ padding:'3px 10px',background:'rgba(0,212,255,0.08)',border:'1px solid rgba(0,212,255,0.2)',borderRadius:4,fontSize:11,fontFamily:'Source Sans 3,sans-serif',fontWeight:600,color:'#00D4FF',letterSpacing:0.5 }}>{s}</span>
                     ))}
                   </div>
-                  <motion.button whileHover={{ scale:1.03 }} style={{ width:'100%',padding:'10px 0',background:'rgba(0,255,136,0.08)',border:'1px solid rgba(0,255,136,0.3)',borderRadius:6,color:'#00FF88',fontFamily:'Orbitron,monospace',fontSize:11,fontWeight:700,cursor:'pointer',letterSpacing:1 }}>
+                  <motion.button whileHover={{ scale:1.03 }} style={{ width:'100%',padding:'10px 0',background:'rgba(0,255,136,0.08)',border:'1px solid rgba(0,255,136,0.3)',borderRadius:6,color:'#00FF88',fontFamily:'Manrope,sans-serif',fontSize:11,fontWeight:700,cursor:'pointer',letterSpacing:1 }}>
                     VIEW DETAILS
                   </motion.button>
                 </motion.div>
@@ -222,6 +222,19 @@ export default function Products() {
           </motion.div>
         </div>
       </section>
+
+      <style>{`
+        @media(max-width:640px){
+          .products-filter-row{margin-bottom:24px!important;gap:8px!important}
+          .products-grid{grid-template-columns:1fr!important;gap:16px!important}
+          .products-card{padding:20px!important}
+        }
+      `}</style>
     </motion.div>
   )
 }
+
+
+
+
+

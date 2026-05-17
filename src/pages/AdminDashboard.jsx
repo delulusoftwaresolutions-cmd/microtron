@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { getEnquiries, getQuoteRequests, markQuotePending, markQuoteProvided } from '../utils/adminStore'
 
 function formatDate(value) {
@@ -332,8 +332,8 @@ export default function AdminDashboard({ onLogout }) {
           gap: 16px;
         }
         .admin-header {
-          border: 1px solid #1e2d47;
-          background: linear-gradient(120deg, rgba(6, 11, 23, 0.96), rgba(8, 27, 51, 0.92));
+          border: 1px solid var(--border-color);
+          background: var(--surface-strong);
           padding: 18px;
           display: flex;
           justify-content: space-between;
@@ -342,7 +342,7 @@ export default function AdminDashboard({ onLogout }) {
           flex-wrap: wrap;
         }
         .admin-eyebrow {
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           color: #00ff88;
           letter-spacing: 1.6px;
           font-size: 11px;
@@ -351,13 +351,13 @@ export default function AdminDashboard({ onLogout }) {
         }
         .admin-header h1 {
           margin: 0;
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           font-size: clamp(18px, 2.2vw, 28px);
-          color: #f0f4ff;
+          color: var(--text-primary);
         }
         .admin-toolbar {
-          border: 1px solid #1e2d47;
-          background: rgba(7, 15, 38, 0.95);
+          border: 1px solid var(--border-color);
+          background: var(--surface-strong);
           padding: 14px;
           display: flex;
           flex-wrap: wrap;
@@ -371,11 +371,11 @@ export default function AdminDashboard({ onLogout }) {
           gap: 8px;
         }
         .admin-tab {
-          border: 1px solid #2e4062;
-          background: #0a132c;
-          color: #a4b7d4;
+          border: 1px solid var(--border-color);
+          background: var(--surface-medium);
+          color: var(--text-secondary);
           padding: 10px 12px;
-          font-family: 'Rajdhani', sans-serif;
+          font-family: 'Source Sans 3', sans-serif;
           font-size: 14px;
           font-weight: 700;
           letter-spacing: 0.5px;
@@ -392,17 +392,17 @@ export default function AdminDashboard({ onLogout }) {
           gap: 14px;
         }
         .admin-empty {
-          border: 1px dashed #2c3f62;
-          color: #8ca0c0;
+          border: 1px dashed var(--border-color);
+          color: var(--text-secondary);
           text-align: center;
           padding: 28px;
-          font-family: 'Rajdhani', sans-serif;
+          font-family: 'Source Sans 3', sans-serif;
           font-size: 16px;
-          background: rgba(10, 18, 40, 0.7);
+          background: var(--surface-medium);
         }
         .admin-quote-card {
-          border: 1px solid #1f2d4f;
-          background: #070f26;
+          border: 1px solid var(--border-color);
+          background: var(--surface-strong);
           padding: 14px;
         }
         .admin-quote-head {
@@ -410,30 +410,30 @@ export default function AdminDashboard({ onLogout }) {
           justify-content: space-between;
           gap: 12px;
           flex-wrap: wrap;
-          border-bottom: 1px solid #1e2d47;
+          border-bottom: 1px solid var(--border-color);
           padding-bottom: 12px;
           margin-bottom: 12px;
         }
         .admin-quote-head h3 {
           margin: 0;
-          font-family: 'Orbitron', monospace;
-          color: #f0f4ff;
+          font-family: 'Manrope', sans-serif;
+          color: var(--text-primary);
           font-size: 16px;
         }
         .admin-quote-head p {
           margin: 6px 0 0;
-          font-family: 'Rajdhani', sans-serif;
-          color: #8ea1be;
+          font-family: 'Source Sans 3', sans-serif;
+          color: var(--text-secondary);
           font-size: 14px;
         }
         .admin-ref {
-          font-family: 'Orbitron', monospace;
-          color: #95aacc;
+          font-family: 'Manrope', sans-serif;
+          color: var(--text-subtle);
           font-size: 11px;
           letter-spacing: 1px;
         }
         .admin-badge {
-          font-family: 'Orbitron', monospace;
+          font-family: 'Manrope', sans-serif;
           font-size: 10px;
           letter-spacing: 1px;
           padding: 5px 8px;
@@ -444,16 +444,16 @@ export default function AdminDashboard({ onLogout }) {
           gap: 14px;
         }
         .admin-subtitle {
-          font-family: 'Orbitron', monospace;
-          color: #00d4ff;
+          font-family: 'Manrope', sans-serif;
+          color: var(--accent-teal);
           letter-spacing: 1px;
           font-size: 11px;
           margin-bottom: 8px;
           text-transform: uppercase;
         }
         .admin-meta {
-          font-family: 'Rajdhani', sans-serif;
-          color: #8ea1be;
+          font-family: 'Source Sans 3', sans-serif;
+          color: var(--text-secondary);
           display: flex;
           flex-direction: column;
           gap: 4px;
@@ -467,11 +467,11 @@ export default function AdminDashboard({ onLogout }) {
         }
         .admin-input {
           width: 100%;
-          background: #071025;
-          color: #f0f4ff;
-          border: 1px solid #2b3f63;
+          background: var(--bg-secondary);
+          color: var(--text-primary);
+          border: 1px solid var(--border-color);
           padding: 10px 12px;
-          font-family: 'Rajdhani', sans-serif;
+          font-family: 'Source Sans 3', sans-serif;
           font-size: 14px;
           outline: none;
         }
@@ -485,7 +485,7 @@ export default function AdminDashboard({ onLogout }) {
         .admin-error {
           margin-top: 8px;
           color: #ff7e7e;
-          font-family: 'Rajdhani', sans-serif;
+          font-family: 'Source Sans 3', sans-serif;
           font-size: 13px;
         }
         .admin-actions {
@@ -496,14 +496,14 @@ export default function AdminDashboard({ onLogout }) {
         }
         .admin-timestamp {
           margin-top: 8px;
-          color: #7085a9;
-          font-family: 'Rajdhani', sans-serif;
+          color: var(--text-muted);
+          font-family: 'Source Sans 3', sans-serif;
           font-size: 12px;
         }
         .admin-table-wrap {
           overflow-x: auto;
-          border: 1px solid #1f2d4f;
-          background: #070f26;
+          border: 1px solid var(--border-color);
+          background: var(--surface-strong);
         }
         .admin-table {
           width: 100%;
@@ -512,21 +512,21 @@ export default function AdminDashboard({ onLogout }) {
         }
         .admin-table th,
         .admin-table td {
-          border-bottom: 1px solid #1e2d47;
+          border-bottom: 1px solid var(--border-color);
           text-align: left;
           padding: 10px;
-          font-family: 'Rajdhani', sans-serif;
+          font-family: 'Source Sans 3', sans-serif;
           font-size: 14px;
-          color: #95a9c8;
+          color: var(--text-secondary);
           white-space: nowrap;
         }
         .admin-table th {
-          color: #d9e6fb;
-          font-family: 'Orbitron', monospace;
+          color: var(--text-primary);
+          font-family: 'Manrope', sans-serif;
           font-size: 11px;
           letter-spacing: 1px;
           text-transform: uppercase;
-          background: #0b142f;
+          background: var(--bg-surface);
           position: sticky;
           top: 0;
         }
@@ -547,4 +547,7 @@ export default function AdminDashboard({ onLogout }) {
     </div>
   )
 }
+
+
+
 

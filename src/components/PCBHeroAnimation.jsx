@@ -49,6 +49,16 @@ for (let y = 70; y <= 324; y += 28) {
   }
 }
 
+const bgStars = []
+for (let y = 8; y <= 372; y += 22) {
+  for (let x = 8; x <= 512; x += 32) {
+    const n = (x * 17 + y * 31) % 97
+    if (n < 20) {
+      bgStars.push([x, y, n < 8 ? 0.55 : 0.24])
+    }
+  }
+}
+
 function ledFill(tint) {
   if (tint === 'amber') return '#e2a41a'
   if (tint === 'cyan') return '#30d9ff'
@@ -162,26 +172,14 @@ export default function PCBHeroAnimation() {
   }, [])
 
   return (
-    <div style={{ width: '100%', maxWidth: 560, minHeight: 430, position: 'relative' }}>
+    <div style={{ width: '100%', maxWidth: 600, position: 'relative' }}>
       <svg
         ref={svgRef}
         viewBox="0 0 520 380"
         width="100%"
-        style={{ display: 'block', filter: 'drop-shadow(0 0 56px rgba(0,236,175,0.18))' }}
+        style={{ display: 'block', filter: 'drop-shadow(0 0 64px rgba(0,236,175,0.16))' }}
       >
         <defs>
-          <linearGradient id="boardFill" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0b4b2a" />
-            <stop offset="100%" stopColor="#063a22" />
-          </linearGradient>
-          <linearGradient id="traceCopper" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#f0a316" />
-            <stop offset="100%" stopColor="#ffbf3f" />
-          </linearGradient>
-          <linearGradient id="chipBody" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0e1122" />
-            <stop offset="100%" stopColor="#050814" />
-          </linearGradient>
           <radialGradient id="ledGlow">
             <stop offset="0%" stopColor="#9dffe1" stopOpacity="0.74" />
             <stop offset="100%" stopColor="#26ff93" stopOpacity="0" />
@@ -192,15 +190,25 @@ export default function PCBHeroAnimation() {
           </radialGradient>
         </defs>
 
-        <text x="16" y="16" fill="#07f7a6" fontSize="14" fontFamily="Orbitron,monospace" fontWeight="700">o SMT - LINE 02 - ACTIVE</text>
-        <text x="16" y="32" fill="#6aaab0" fontSize="11" fontFamily="Rajdhani,sans-serif">P1</text>
+        <rect x="0" y="0" width="520" height="380" fill="#061426" />
+        <ellipse cx="260" cy="186" rx="246" ry="166" fill="#00ffae" opacity="0.08" />
+        <g fill="#42d8c2">
+          {bgStars.map(([cx, cy, opacity], i) => (
+            <circle key={i} cx={cx} cy={cy} r="0.55" opacity={opacity} />
+          ))}
+        </g>
+
+        <rect x="16" y="13.5" width="6.5" height="6.5" rx="0.8" fill="none" stroke="#00efb0" strokeWidth="1.6" />
+        <text x="28" y="20" fill="#07f7a6" fontSize="8.5" letterSpacing="0.8" fontFamily="Manrope,sans-serif" fontWeight="800">
+          SMT - LINE 02 - ACTIVE
+        </text>
 
         <g className="pcb-board">
-          <rect x="20" y="22" width="480" height="340" rx="8" fill="url(#boardFill)" stroke="#18f0ad" strokeWidth="1.1" />
-          <rect x="30" y="30" width="460" height="324" rx="2" fill="none" stroke="#7ce9ca" strokeOpacity="0.2" strokeDasharray="4 6" />
+          <rect x="28" y="28" width="464" height="326" rx="8" fill="#08522f" stroke="#18f0ad" strokeWidth="1.1" />
+          <rect x="38" y="36" width="444" height="310" rx="2" fill="none" stroke="#7ce9ca" strokeOpacity="0.24" strokeDasharray="4 8" />
 
           <g>
-            {[[34, 34], [486, 34], [34, 348], [486, 348]].map(([cx, cy], i) => (
+            {[[40, 40], [480, 40], [40, 348], [480, 348]].map(([cx, cy], i) => (
               <g key={i}>
                 <circle cx={cx} cy={cy} r="6.8" fill="#001127" stroke="#2decb3" strokeWidth="1" />
                 <circle cx={cx} cy={cy} r="3.7" fill="#020918" />
@@ -208,13 +216,15 @@ export default function PCBHeroAnimation() {
             ))}
           </g>
 
-          <text x="38" y="52" fill="#7ea7a7" opacity="0.85" fontSize="7.6" fontFamily="Orbitron,monospace" fontWeight="700">
+          <text x="52" y="58" fill="#8eb8af" opacity="0.78" fontSize="7.4" letterSpacing="0.2" fontFamily="Manrope,sans-serif" fontWeight="700">
             MICROTRON - REV 2.4 - 4-LAYER
           </text>
-          <text x="356" y="52" fill="#86afaf" opacity="0.85" fontSize="7.6" fontFamily="Orbitron,monospace" fontWeight="700">
+          <text x="336" y="58" fill="#92b4af" opacity="0.78" fontSize="7.4" letterSpacing="0.2" fontFamily="Manrope,sans-serif" fontWeight="700">
             SN: MT-2025-0814
           </text>
-          <text x="414" y="370" fill="#7aaeb3" opacity="0.9" fontSize="13" fontFamily="Orbitron,monospace">IPC-A-610 CLASS 3</text>
+          <text x="506" y="368" textAnchor="end" fill="#87a8b1" opacity="0.9" fontSize="9.5" letterSpacing="0.35" fontFamily="Manrope,sans-serif">
+            IPC-A-610 CLASS 3
+          </text>
         </g>
 
         <g fill="#f0aa20" opacity="0.9">
@@ -225,7 +235,7 @@ export default function PCBHeroAnimation() {
 
         <g fill="none">
           {traces.map((t, i) => (
-            <path key={i} className="trace-line" d={t.d} stroke="url(#traceCopper)" strokeWidth={t.w} strokeLinecap="round" strokeLinejoin="round" />
+            <path key={i} className="trace-line" d={t.d} stroke="#f3b128" strokeWidth={t.w} strokeLinecap="round" strokeLinejoin="round" />
           ))}
         </g>
 
@@ -243,7 +253,7 @@ export default function PCBHeroAnimation() {
             <g className="pcb-comp">
               {c.type === 'ic' && (
                 <>
-                  <rect x={-c.w / 2} y={-c.h / 2} width={c.w} height={c.h} rx="2" fill="url(#chipBody)" stroke="#2a3555" strokeWidth="1" />
+                  <rect x={-c.w / 2} y={-c.h / 2} width={c.w} height={c.h} rx="2" fill="#090d20" stroke="#2a3555" strokeWidth="1" />
                   {Array.from({ length: 7 }).map((_, pi) => {
                     const px = -c.w / 2 + 6 + pi * ((c.w - 12) / 6)
                     return (
@@ -253,7 +263,7 @@ export default function PCBHeroAnimation() {
                       </g>
                     )
                   })}
-                  <text x="0" y="4" textAnchor="middle" fontSize="9" fill="#73ffda" fontFamily="Orbitron,monospace" fontWeight="700">
+                  <text x="0" y="4" textAnchor="middle" fontSize="9" fill="#73ffda" fontFamily="Manrope,sans-serif" fontWeight="700">
                     {c.label}
                   </text>
                 </>
@@ -261,7 +271,7 @@ export default function PCBHeroAnimation() {
 
               {c.type === 'mcu' && (
                 <>
-                  <rect x={-c.w / 2} y={-c.h / 2} width={c.w} height={c.h} rx="0" fill="#0a0d1a" stroke="#1e2742" strokeWidth="1.2" />
+                  <rect x={-c.w / 2} y={-c.h / 2} width={c.w} height={c.h} rx="0" fill="#090d1f" stroke="#1e2742" strokeWidth="1.2" />
                   {Array.from({ length: 13 }).map((_, pi) => {
                     const sx = -c.w / 2 + 8 + pi * ((c.w - 16) / 12)
                     const sy = -c.h / 2 + 8 + pi * ((c.h - 16) / 12)
@@ -275,7 +285,7 @@ export default function PCBHeroAnimation() {
                     )
                   })}
                   <circle cx={-c.w / 2 + 12} cy={-c.h / 2 + 12} r="2.8" fill="#353d59" />
-                  <text x="0" y="6" textAnchor="middle" fontSize="14" fill="#9dd9c3" fontFamily="Orbitron,monospace" fontWeight="700">
+                  <text x="0" y="6" textAnchor="middle" fontSize="14" fill="#9dd9c3" fontFamily="Manrope,sans-serif" fontWeight="700">
                     {c.label}
                   </text>
                 </>
@@ -310,7 +320,7 @@ export default function PCBHeroAnimation() {
                 <>
                   <circle cx="0" cy="0" r="10" fill="#0e1931" stroke="#2f3d66" strokeWidth="1" />
                   <circle cx="0" cy="0" r="7.8" fill="none" stroke="#1f3056" strokeWidth="1" />
-                  <text x="0" y="3.4" textAnchor="middle" fontSize="7.2" fill="#78a8d4" fontFamily="Orbitron,monospace" fontWeight="700">
+                  <text x="0" y="3.4" textAnchor="middle" fontSize="7.2" fill="#78a8d4" fontFamily="Manrope,sans-serif" fontWeight="700">
                     {c.label}
                   </text>
                 </>
@@ -326,3 +336,4 @@ export default function PCBHeroAnimation() {
     </div>
   )
 }
+

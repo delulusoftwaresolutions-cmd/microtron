@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const services = [
@@ -66,13 +66,13 @@ export default function Services() {
   return (
     <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }}>
       {/* Hero */}
-      <div className="page-hero" style={{ background:'linear-gradient(135deg,#0A0E1A,#0d1526)' }}>
+      <div className="page-hero" style={{ background:'var(--bg-primary)' }}>
         <div className="circuit-bg" />
-        <div style={{ position:'absolute',inset:0,background:'radial-gradient(ellipse at 70% 50%,rgba(212,134,10,0.06) 0%,transparent 60%)' }} />
+        <div style={{ position:'absolute',inset:0,background:'var(--surface-soft)' }} />
         <div className="container" style={{ position:'relative',zIndex:1 }}>
           <motion.div initial={{ opacity:0,y:30 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.2 }}>
             <div className="section-eyebrow">Services</div>
-            <h1 className="section-title" style={{ fontSize:'clamp(32px,5vw,60px)' }}>What We Offer</h1>
+            <h1 className="section-title" style={{ fontSize:'clamp(24px,3.6vw,42px)' }}>What We Offer</h1>
             <p className="section-subtitle">Comprehensive electronics engineering and manufacturing solutions for every stage of your product lifecycle.</p>
           </motion.div>
         </div>
@@ -86,16 +86,16 @@ export default function Services() {
               <motion.div key={i} initial={{ opacity:0,y:20 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ delay:i*0.06 }}>
                 <motion.div
                   whileHover={{ borderColor:`${svc.color}44` }}
-                  style={{ background:'rgba(17,24,39,0.8)',border:'1px solid #1e2d47',borderRadius:12,overflow:'hidden',transition:'border-color 0.3s' }}>
+                  style={{ background:'var(--surface-strong)',border:'1px solid var(--border-color)',borderRadius:12,overflow:'hidden',transition:'border-color 0.3s' }}>
                   {/* Header */}
-                  <button onClick={() => setOpenIdx(openIdx===i ? null : i)}
+                  <button className="service-header-btn" onClick={() => setOpenIdx(openIdx===i ? null : i)}
                     style={{ width:'100%',padding:'24px 28px',background:'none',border:'none',cursor:'pointer',display:'flex',alignItems:'center',gap:20,textAlign:'left' }}>
                     <div style={{ width:52,height:52,borderRadius:10,background:`${svc.color}15`,border:`1px solid ${svc.color}33`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:24,flexShrink:0 }}>
                       {svc.icon}
                     </div>
                     <div style={{ flex:1,minWidth:0 }}>
-                      <div style={{ fontFamily:'Orbitron,monospace',fontSize:14,fontWeight:700,color:'#F0F4FF',marginBottom:4 }}>{svc.title}</div>
-                      <div style={{ fontFamily:'Rajdhani,sans-serif',fontSize:14,color:'#8899BB' }}>{svc.short}</div>
+                      <div style={{ fontFamily:'Manrope,sans-serif',fontSize:14,fontWeight:700,color:'var(--text-primary)',marginBottom:4 }}>{svc.title}</div>
+                      <div style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:14,color:'var(--text-secondary)' }}>{svc.short}</div>
                     </div>
                     <motion.div animate={{ rotate: openIdx===i ? 45 : 0 }} transition={{ duration:0.2 }}
                       style={{ width:32,height:32,borderRadius:'50%',border:`1px solid ${svc.color}44`,display:'flex',alignItems:'center',justifyContent:'center',color:svc.color,fontSize:18,flexShrink:0 }}>
@@ -108,19 +108,19 @@ export default function Services() {
                     {openIdx === i && (
                       <motion.div initial={{ height:0,opacity:0 }} animate={{ height:'auto',opacity:1 }} exit={{ height:0,opacity:0 }} transition={{ duration:0.35,ease:'easeInOut' }}
                         style={{ overflow:'hidden' }}>
-                        <div style={{ padding:'0 28px 28px',borderTop:`1px solid ${svc.color}22`,paddingTop:24 }}>
-                          <div style={{ display:'grid',gridTemplateColumns:'1fr auto',gap:32,alignItems:'flex-start' }}>
+                        <div className="service-expanded-inner" style={{ padding:'0 28px 28px',borderTop:`1px solid ${svc.color}22`,paddingTop:24 }}>
+                          <div className="service-expand-grid" style={{ display:'grid',gridTemplateColumns:'1fr auto',gap:32,alignItems:'flex-start' }}>
                             <div>
-                              <p style={{ fontFamily:'Rajdhani,sans-serif',fontSize:16,color:'#8899BB',lineHeight:1.8,marginBottom:20 }}>{svc.desc}</p>
+                              <p style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:16,color:'var(--text-secondary)',lineHeight:1.8,marginBottom:20 }}>{svc.desc}</p>
                             </div>
-                            <div style={{ minWidth:220 }}>
-                              <div style={{ fontFamily:'Orbitron,monospace',fontSize:10,fontWeight:700,letterSpacing:2,color:svc.color,marginBottom:14,textTransform:'uppercase' }}>Capabilities</div>
+                            <div className="service-cap-col" style={{ minWidth:220 }}>
+                              <div style={{ fontFamily:'Manrope,sans-serif',fontSize:10,fontWeight:700,letterSpacing:2,color:svc.color,marginBottom:14,textTransform:'uppercase' }}>Capabilities</div>
                               <div style={{ display:'flex',flexDirection:'column',gap:8 }}>
                                 {svc.highlights.map((h,j) => (
                                   <motion.div key={j} initial={{ opacity:0,x:10 }} animate={{ opacity:1,x:0 }} transition={{ delay:j*0.05 }}
                                     style={{ display:'flex',alignItems:'center',gap:8 }}>
                                     <div style={{ width:6,height:6,borderRadius:'50%',background:svc.color,boxShadow:`0 0 6px ${svc.color}`,flexShrink:0 }} />
-                                    <span style={{ fontFamily:'Rajdhani,sans-serif',fontSize:13,color:'#8899BB' }}>{h}</span>
+                                    <span style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:13,color:'var(--text-secondary)' }}>{h}</span>
                                   </motion.div>
                                 ))}
                               </div>
@@ -136,6 +136,31 @@ export default function Services() {
           </div>
         </div>
       </section>
+
+      <style>{`
+        @media(max-width:980px){
+          .service-header-btn{
+            padding:18px 16px!important;
+            gap:12px!important;
+            align-items:flex-start!important;
+          }
+          .service-expanded-inner{
+            padding:0 16px 18px!important;
+            padding-top:16px!important;
+          }
+          .service-expand-grid{
+            grid-template-columns:1fr!important;
+            gap:16px!important;
+          }
+          .service-cap-col{min-width:0!important}
+        }
+      `}</style>
     </motion.div>
   )
 }
+
+
+
+
+
+

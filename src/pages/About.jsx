@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+﻿import { motion } from 'framer-motion'
 
 const timeline = [
   { year: '2010', title: 'Company Founded', desc: 'Microtron India Technologies established in Puducherry with a focus on PCB manufacturing.' },
@@ -27,32 +27,32 @@ export default function About() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
       {/* Hero */}
-      <div className="page-hero" style={{ background: 'linear-gradient(135deg,#0A0E1A,#0d1a2a)' }}>
+      <div className="page-hero" style={{ background: 'var(--bg-primary)' }}>
         <div className="circuit-bg" />
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 50%,rgba(0,255,136,0.07) 0%,transparent 60%)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'var(--surface-soft)' }} />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="section-eyebrow">About Us</div>
-            <h1 className="section-title" style={{ fontSize: 'clamp(32px,5vw,60px)' }}>Engineering Excellence<br /><span style={{ color: '#00FF88' }}>Since 2010</span></h1>
+            <h1 className="section-title" style={{ fontSize: 'clamp(24px,3.6vw,42px)' }}>Engineering Excellence<br /><span style={{ color: '#00FF88' }}>Since 2010</span></h1>
             <p className="section-subtitle">A forward-thinking company committed to world-class electronics design, manufacturing, and integration services.</p>
           </motion.div>
         </div>
       </div>
 
       {/* Story + Timeline */}
-      <section className="section">
+      <section className="section about-certs-section">
         <div className="circuit-bg" />
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'flex-start' }}>
+          <div className="about-main-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'flex-start' }}>
             <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
               <div className="section-eyebrow">Our Journey</div>
               <h2 className="section-title">A Timeline of Growth</h2>
               <div style={{ marginTop: 32 }}>
                 {timeline.map((item, i) => (
                   <motion.div key={i} className="timeline-item" initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                    <div style={{ fontFamily: 'Orbitron,monospace', fontSize: 11, fontWeight: 700, color: '#00FF88', letterSpacing: 2, marginBottom: 4 }}>{item.year}</div>
-                    <div style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 17, fontWeight: 700, color: '#F0F4FF', marginBottom: 6 }}>{item.title}</div>
-                    <div style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 14, color: '#8899BB', lineHeight: 1.6 }}>{item.desc}</div>
+                    <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 11, fontWeight: 700, color: '#00FF88', letterSpacing: 2, marginBottom: 4 }}>{item.year}</div>
+                    <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>{item.title}</div>
+                    <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item.desc}</div>
                   </motion.div>
                 ))}
               </div>
@@ -61,19 +61,19 @@ export default function About() {
             <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
               <div className="section-eyebrow">Who We Are</div>
               <h2 className="section-title">Our Story</h2>
-              <div style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 16, color: '#8899BB', lineHeight: 1.8, display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 16, color: 'var(--text-secondary)', lineHeight: 1.8, display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <p>Microtron India Technologies Pvt. Ltd. is a forward-thinking company committed to providing world-class electronics design, manufacturing, and integration services based in Puducherry, India.</p>
                 <p>With a strong foundation in innovation and engineering expertise, we deliver customized solutions catering to the automotive, industrial, IoT, renewable energy, and consumer electronics sectors.</p>
                 <p>Our state-of-the-art Electronics Manufacturing Services ensure high-quality PCB assembly, testing, and product integration, meeting both national and international standards.</p>
                 <p>We believe in building long-term partnerships by offering end-to-end solutions — from concept design to production, deployment, and after-sales support.</p>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 32 }}>
+              <div className="about-mission-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 32 }}>
                 {missionVision.map((item, i) => (
                   <motion.div key={i} whileHover={{ scale: 1.02, borderColor: 'rgba(0,255,136,0.4)' }}
-                    style={{ padding: 24, background: 'rgba(17,24,39,0.8)', border: '1px solid #1e2d47', borderRadius: 12, transition: 'all 0.3s' }}>
+                    style={{ padding: 24, background: 'var(--surface-strong)', border: '1px solid var(--border-color)', borderRadius: 12, transition: 'all 0.3s' }}>
                     <div style={{ fontSize: 28, marginBottom: 10 }}>{item.icon}</div>
-                    <div style={{ fontFamily: 'Orbitron,monospace', fontSize: 13, fontWeight: 700, color: '#00FF88', marginBottom: 8 }}>{item.title}</div>
-                    <p style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 13, color: '#8899BB', lineHeight: 1.5 }}>{item.desc}</p>
+                    <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 13, fontWeight: 700, color: '#00FF88', marginBottom: 8 }}>{item.title}</div>
+                    <p style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{item.desc}</p>
                   </motion.div>
                 ))}
               </div>
@@ -83,7 +83,7 @@ export default function About() {
       </section>
 
       {/* Core Values */}
-      <section className="section" style={{ background: '#070B15' }}>
+      <section className="section" style={{ background: 'var(--bg-secondary)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div className="section-eyebrow" style={{ justifyContent: 'center' }}>Core Values</div>
@@ -93,10 +93,10 @@ export default function About() {
             {values.map((v, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
                 whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,255,136,0.1)' }}
-                style={{ padding: 28, background: 'rgba(17,24,39,0.6)', border: '1px solid #1e2d47', borderRadius: 12, textAlign: 'center', transition: 'all 0.3s' }}>
+                style={{ padding: 28, background: 'var(--surface-medium)', border: '1px solid var(--border-color)', borderRadius: 12, textAlign: 'center', transition: 'all 0.3s' }}>
                 <div style={{ fontSize: 36, marginBottom: 14 }}>{v.icon}</div>
-                <div style={{ fontFamily: 'Orbitron,monospace', fontSize: 13, fontWeight: 700, color: '#F0F4FF', marginBottom: 8 }}>{v.title}</div>
-                <p style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 13, color: '#8899BB', lineHeight: 1.5 }}>{v.desc}</p>
+                <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>{v.title}</div>
+                <p style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{v.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -115,7 +115,8 @@ export default function About() {
             {['IPC-A-610', 'IPC-7711/7721', 'AIS-140 GPS', 'ISO 9001:2015', 'RoHS Compliant', 'REACH Compliant'].map((cert, i) => (
               <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
                 whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(0,255,136,0.2)' }}
-                style={{ padding: '16px 28px', background: 'rgba(0,255,136,0.05)', border: '1px solid rgba(0,255,136,0.2)', borderRadius: 8, fontFamily: 'Orbitron,monospace', fontSize: 11, fontWeight: 700, color: '#00FF88', letterSpacing: 1 }}>
+                className="about-cert-chip"
+                style={{ padding: '16px 28px', background: 'rgba(0,255,136,0.05)', border: '1px solid rgba(0,255,136,0.2)', borderRadius: 8, fontFamily: 'Manrope,sans-serif', fontSize: 11, fontWeight: 700, color: 'var(--accent-green)', letterSpacing: 1 }}>
                 ✓ {cert}
               </motion.div>
             ))}
@@ -124,17 +125,54 @@ export default function About() {
       </section>
 
       {/* Address */}
-      <section style={{ padding: '48px 0', background: '#070B15', borderTop: '1px solid #1e2d47' }}>
+      <section className="about-address-section" style={{ padding: '48px 0', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)' }}>
         <div className="container" style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 14, color: '#8899BB', letterSpacing: 1 }}>
+          <div className="about-address-line" style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 14, color: 'var(--text-secondary)', letterSpacing: 1 }}>
             📍 No.01, Bajana Madam Street, Muthiyarpalayam, Puducherry - 605009, India
           </div>
           <div style={{ marginTop: 12, display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <span style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 14, color: '#00FF88' }}>📞 +91-9159991774</span>
-            <span style={{ fontFamily: 'Rajdhani,sans-serif', fontSize: 14, color: '#00FF88' }}>📧 sales@microtron.co.in</span>
+            <span className="about-contact-link" style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 14, color: 'var(--accent-green)' }}>📞 +91-9159991774</span>
+            <span className="about-contact-link" style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 14, color: 'var(--accent-green)' }}>📧 sales@microtron.co.in</span>
           </div>
         </div>
       </section>
+
+      <style>{`
+        :root[data-theme='light'] .about-certs-section{
+          background: var(--bg-surface);
+          border-top: 1px solid var(--border-color);
+          border-bottom: 1px solid var(--border-color);
+        }
+        :root[data-theme='light'] .about-cert-chip{
+          background: rgba(0,168,107,0.08)!important;
+          border-color: rgba(0,168,107,0.28)!important;
+          color: var(--accent-green-dim)!important;
+        }
+        :root[data-theme='light'] .about-address-line{
+          color: var(--text-primary)!important;
+        }
+        :root[data-theme='light'] .about-contact-link{
+          color: var(--accent-green-dim)!important;
+          font-weight: 700;
+        }
+        @media(max-width:980px){
+          .about-main-grid{grid-template-columns:1fr!important;gap:34px!important}
+        }
+        @media(max-width:640px){
+          .about-mission-grid{grid-template-columns:1fr!important}
+          .about-address-line{
+            font-size:13px!important;
+            letter-spacing:0.5px!important;
+            overflow-wrap:anywhere;
+          }
+        }
+      `}</style>
     </motion.div>
   )
 }
+
+
+
+
+
+
