@@ -44,14 +44,14 @@ export default function Navbar({ theme = 'dark', onToggleTheme }) {
         style={{
           maxWidth: 1280,
           margin: '0 auto',
-          padding: '0 24px',
+          padding: '0 clamp(14px, 4.4vw, 24px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          height: 78,
+          height: 'clamp(68px, 10vw, 78px)',
         }}
       >
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', padding: '6px 0' }}>
+        <Link to="/" className="navbar-brand-link" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', padding: '6px 0' }}>
           <BrandLogo size="nav" />
         </Link>
 
@@ -83,7 +83,7 @@ export default function Navbar({ theme = 'dark', onToggleTheme }) {
           </button>
         </div>
 
-        <button id="hamburger" onClick={() => setOpen(!open)} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)', padding: 4 }}>
+        <button id="hamburger" onClick={() => setOpen(!open)} style={{ display: 'none', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 8, cursor: 'pointer', color: 'var(--text-primary)', padding: 0, flexShrink: 0 }}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             {open ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></> : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>}
           </svg>
@@ -120,7 +120,17 @@ export default function Navbar({ theme = 'dark', onToggleTheme }) {
           </motion.div>
         )}
       </AnimatePresence>
-      <style>{`@media(max-width:900px){#desktop-nav{display:none!important}#hamburger{display:block!important}}`}</style>
+      <style>{`
+        @media(max-width:900px){
+          #desktop-nav{display:none!important}
+          #hamburger{display:flex!important}
+          .navbar-brand-link > div{transform-origin:left center}
+        }
+        @media(max-width:640px){
+          .navbar-brand-link > div{transform:scale(0.9)}
+          #hamburger svg{width:21px;height:21px}
+        }
+      `}</style>
     </motion.nav>
   )
 }

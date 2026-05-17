@@ -69,13 +69,13 @@ export default function Home() {
         {/* Radial glow */}
         <div className="home-hero-glow" style={{ position: 'absolute', right: '6%', top: '50%', transform: 'translateY(-50%)', width: 620, height: 620, background: 'var(--surface-soft)', pointerEvents: 'none' }} />
 
-        <div className="container hero-grid" style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center', width: '100%', position: 'relative', zIndex: 1 }}>
+        <div className="container hero-grid" style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(14px, 4.4vw, 24px)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center', width: '100%', position: 'relative', zIndex: 1 }}>
           {/* Left */}
           <div className="hero-left">
-            <motion.div initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.2 }}
+            <motion.div className="home-hero-badge" initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.2 }}
               style={{ display:'inline-flex',alignItems:'center',gap:8,padding:'6px 14px',background:'rgba(0,255,136,0.08)',border:'1px solid rgba(0,255,136,0.2)',borderRadius:100,marginBottom:24 }}>
               <div style={{ width:6,height:6,background:'#00FF88',borderRadius:'50%',boxShadow:'0 0 8px #00FF88',animation:'ledPulse 1.5s ease infinite' }} />
-              <span style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:12,fontWeight:600,letterSpacing:2,color:'#00FF88' }}>PRECISION ELECTRONICS MANUFACTURING</span>
+              <span className="home-hero-badge-text" style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:12,fontWeight:600,letterSpacing:2,color:'#00FF88' }}>PRECISION ELECTRONICS MANUFACTURING</span>
             </motion.div>
 
             <motion.h1 className="home-hero-title" initial={{ opacity:0,y:30 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.35 }}
@@ -149,6 +149,20 @@ export default function Home() {
           }
           @media(max-width:640px){
             .hero-right{min-height:320px}
+            .hero-left{
+              display:flex!important;
+              flex-direction:column!important;
+              align-items:flex-start!important;
+            }
+            .home-hero-badge{
+              max-width:100%!important;
+              margin-bottom:18px!important;
+              padding:8px 12px!important;
+            }
+            .home-hero-badge-text{
+              letter-spacing:1.4px!important;
+              line-height:1.45!important;
+            }
             .home-hero-title{font-size:clamp(24px,10vw,38px)!important;line-height:1.06!important}
             .home-hero-lead{font-size:15px!important;line-height:1.65!important;margin-bottom:24px!important}
             .home-hero-actions{flex-direction:column!important;gap:12px!important;margin-bottom:34px!important}
