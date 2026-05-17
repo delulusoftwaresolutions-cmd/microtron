@@ -412,10 +412,10 @@ function Step3({ data, setData }) {
           </svg>
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{ fontSize: 34, marginBottom: 10 }}>FILES</div>
-            <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 13, fontWeight: 700, color: isDragActive ? '#00FF88' : '#A4BCD5', marginBottom: 8 }}>
+            <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 13, fontWeight: 700, color: isDragActive ? 'var(--accent-green)' : 'var(--text-secondary)', marginBottom: 8 }}>
               {isDragActive ? 'DROP FILES HERE' : 'DRAG AND DROP GERBER FILES'}
             </div>
-            <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 13, color: '#5e6f8f' }}>Accepts .zip, .rar, .gbr, .ger</div>
+            <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 13, color: 'var(--text-muted)' }}>Accepts .zip, .rar, .gbr, .ger</div>
           </div>
         </div>
       </div>
@@ -435,12 +435,12 @@ function Step3({ data, setData }) {
                   alignItems: 'center',
                   gap: 12,
                   padding: '10px 14px',
-                  background: 'rgba(0,255,136,0.05)',
-                  border: '1px solid rgba(0,255,136,0.2)',
+                  background: 'var(--quote-summary-bg)',
+                  border: '1px solid var(--quote-summary-border)',
                   borderRadius: 6,
                 }}
               >
-                <span style={{ fontSize: 16, color: '#00ff88' }}>OK</span>
+                <span style={{ fontSize: 16, color: 'var(--accent-green)' }}>OK</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 14, color: 'var(--text-primary)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</div>
                   <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 12, color: 'var(--text-secondary)' }}>{(f.size / 1024).toFixed(1)} KB</div>
@@ -602,7 +602,7 @@ export default function Quote() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-      <div className="page-hero" style={{ background: '#060B17', minHeight: '28vh', paddingBottom: 30 }}>
+      <div className="page-hero" style={{ background: 'linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-surface) 100%)', minHeight: '28vh', paddingBottom: 30 }}>
         <div className="circuit-bg" />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
@@ -651,6 +651,61 @@ export default function Quote() {
         .quote-shell {
           max-width: 1320px;
           margin: 0 auto;
+          --quote-accent: var(--accent-green);
+          --quote-panel-bg: rgba(7, 15, 38, 0.84);
+          --quote-panel-border: #1f2a4a;
+          --quote-step-bg: rgba(8, 14, 31, 0.8);
+          --quote-step-border: #2a3555;
+          --quote-step-text: #6d7da2;
+          --quote-title: #f0f4ff;
+          --quote-label-text: #90a5c8;
+          --quote-muted-text: #95a7c6;
+          --quote-muted-strong: #a7bad7;
+          --quote-input-bg: #070f26;
+          --quote-input-border: #253358;
+          --quote-input-placeholder: #5f7499;
+          --quote-mini-text: #88a1c8;
+          --quote-chip-text: #96add1;
+          --quote-swatch-border: #344769;
+          --quote-preview-bg: #070f26;
+          --quote-preview-border: #1f2d4f;
+          --quote-summary-row-border: rgba(42, 64, 99, 0.6);
+          --quote-strong-text: #f0f4ff;
+          --quote-accent-glow: 0 0 16px rgba(0, 255, 155, 0.2);
+          --quote-focus-glow: 0 0 14px rgba(0, 255, 155, 0.18);
+          --quote-chip-active-glow: 0 0 18px rgba(0, 255, 155, 0.3);
+          --quote-preview-glow: drop-shadow(0 0 22px rgba(0, 255, 155, 0.2));
+          --quote-summary-bg: rgba(0, 255, 155, 0.05);
+          --quote-summary-border: rgba(0, 255, 155, 0.2);
+          --quote-done-glow: 0 0 26px rgba(0, 255, 155, 0.3);
+        }
+        :root[data-theme='light'] .quote-shell {
+          --quote-panel-bg: rgba(255, 255, 255, 0.96);
+          --quote-panel-border: #b9cade;
+          --quote-step-bg: #eef4fb;
+          --quote-step-border: #bccce0;
+          --quote-step-text: #5f7895;
+          --quote-title: #132942;
+          --quote-label-text: #5f7895;
+          --quote-muted-text: #3f5974;
+          --quote-muted-strong: #42617e;
+          --quote-input-bg: #ffffff;
+          --quote-input-border: #b9cade;
+          --quote-input-placeholder: #839ab2;
+          --quote-mini-text: #48637f;
+          --quote-chip-text: #35516d;
+          --quote-swatch-border: #9cb1c8;
+          --quote-preview-bg: #f4f8fd;
+          --quote-preview-border: #b9cade;
+          --quote-summary-row-border: rgba(143, 165, 190, 0.55);
+          --quote-strong-text: #132942;
+          --quote-accent-glow: 0 0 16px rgba(0, 168, 107, 0.18);
+          --quote-focus-glow: 0 0 0 3px rgba(0, 168, 107, 0.16);
+          --quote-chip-active-glow: 0 0 16px rgba(0, 168, 107, 0.22);
+          --quote-preview-glow: drop-shadow(0 0 14px rgba(0, 168, 107, 0.18));
+          --quote-summary-bg: rgba(0, 168, 107, 0.08);
+          --quote-summary-border: rgba(0, 168, 107, 0.24);
+          --quote-done-glow: 0 0 20px rgba(0, 168, 107, 0.24);
         }
         .quote-stepper {
           display: grid;
@@ -667,9 +722,9 @@ export default function Quote() {
         .quote-step-box {
           width: 40px;
           height: 40px;
-          border: 1px solid #2a3555;
-          background: rgba(8, 14, 31, 0.8);
-          color: #6d7da2;
+          border: 1px solid var(--quote-step-border);
+          background: var(--quote-step-bg);
+          color: var(--quote-step-text);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -679,22 +734,22 @@ export default function Quote() {
         }
         .quote-step-box.active,
         .quote-step-box.done {
-          border-color: #00ff9b;
-          color: #00ff9b;
-          box-shadow: 0 0 16px rgba(0, 255, 155, 0.2);
+          border-color: var(--quote-accent);
+          color: var(--quote-accent);
+          box-shadow: var(--quote-accent-glow);
         }
         .quote-step-label {
           font-family: 'Manrope', sans-serif;
           letter-spacing: 2px;
           font-size: 10px;
-          color: #7e8eae;
+          color: var(--quote-muted-text);
         }
         .quote-step-label.active {
-          color: #00ff9b;
+          color: var(--quote-accent);
         }
         .quote-main-panel {
-          border: 1px solid #1f2a4a;
-          background: rgba(7, 15, 38, 0.84);
+          border: 1px solid var(--quote-panel-border);
+          background: var(--quote-panel-bg);
           padding: 28px 30px;
           min-height: 500px;
         }
@@ -702,7 +757,7 @@ export default function Quote() {
           font-family: 'Manrope', sans-serif;
           font-size: clamp(20px, 2.5vw, 34px);
           line-height: 1.1;
-          color: #f0f4ff;
+          color: var(--quote-title);
           margin: 0 0 20px;
         }
         .quote-step1-grid {
@@ -727,17 +782,17 @@ export default function Quote() {
           font-family: 'Manrope', sans-serif;
           font-size: 12px;
           letter-spacing: 2px;
-          color: #90a5c8;
+          color: var(--quote-label-text);
           margin-bottom: 8px;
           text-transform: uppercase;
         }
         .quote-input {
           width: 100%;
           height: 48px;
-          background: #070f26;
-          border: 1px solid #253358;
+          background: var(--quote-input-bg);
+          border: 1px solid var(--quote-input-border);
           border-radius: 0;
-          color: #f0f4ff;
+          color: var(--quote-title);
           font-size: 16px;
           font-weight: 600;
           padding: 0 14px;
@@ -745,11 +800,11 @@ export default function Quote() {
         }
         .quote-input:focus {
           outline: none;
-          border-color: #00ff9b;
-          box-shadow: 0 0 14px rgba(0, 255, 155, 0.18);
+          border-color: var(--quote-accent);
+          box-shadow: var(--quote-focus-glow);
         }
         .quote-input::placeholder {
-          color: #5f7499;
+          color: var(--quote-input-placeholder);
         }
         .quote-select {
           font-size: 16px;
@@ -758,21 +813,21 @@ export default function Quote() {
           display: grid;
           grid-template-columns: 52px 1fr 52px;
           gap: 0;
-          border: 1px solid #253358;
-          background: #070f26;
+          border: 1px solid var(--quote-input-border);
+          background: var(--quote-input-bg);
         }
         .quote-qty-btn {
           border: 0;
-          border-right: 1px solid #253358;
+          border-right: 1px solid var(--quote-input-border);
           background: transparent;
-          color: #00ff9b;
+          color: var(--quote-accent);
           font-size: 28px;
           cursor: pointer;
           font-family: 'Manrope', sans-serif;
         }
         .quote-qty-btn:last-child {
           border-right: 0;
-          border-left: 1px solid #253358;
+          border-left: 1px solid var(--quote-input-border);
         }
         .quote-qty-input {
           border: 0;
@@ -788,16 +843,16 @@ export default function Quote() {
         .quote-mini-btn {
           min-width: 46px;
           height: 28px;
-          border: 1px solid #253358;
-          background: #070f26;
-          color: #88a1c8;
+          border: 1px solid var(--quote-input-border);
+          background: var(--quote-input-bg);
+          color: var(--quote-mini-text);
           font-family: 'Manrope', sans-serif;
           font-size: 11px;
           cursor: pointer;
         }
         .quote-mini-btn.active {
-          color: #00ff9b;
-          border-color: #00ff9b;
+          color: var(--quote-accent);
+          border-color: var(--quote-accent);
         }
         .quote-chip-row {
           display: flex;
@@ -807,19 +862,19 @@ export default function Quote() {
         .quote-chip {
           height: 40px;
           padding: 0 16px;
-          border: 1px solid #253358;
-          background: #070f26;
-          color: #96add1;
+          border: 1px solid var(--quote-input-border);
+          background: var(--quote-input-bg);
+          color: var(--quote-chip-text);
           font-family: 'Manrope', sans-serif;
           font-size: 12px;
           letter-spacing: 0.8px;
           cursor: pointer;
         }
         .quote-chip.active {
-          border-color: #00ff9b;
-          background: #0df59a;
-          color: #03231a;
-          box-shadow: 0 0 18px rgba(0, 255, 155, 0.3);
+          border-color: var(--quote-accent);
+          background: var(--quote-accent);
+          color: var(--btn-primary-text);
+          box-shadow: var(--quote-chip-active-glow);
         }
         .quote-swatch-row {
           display: flex;
@@ -829,17 +884,17 @@ export default function Quote() {
         .quote-swatch {
           width: 30px;
           height: 30px;
-          border: 2px solid #344769;
+          border: 2px solid var(--quote-swatch-border);
           border-radius: 3px;
           cursor: pointer;
         }
         .quote-swatch.active {
-          border-color: #00ff9b;
-          box-shadow: 0 0 14px rgba(0, 255, 155, 0.25);
+          border-color: var(--quote-accent);
+          box-shadow: var(--quote-accent-glow);
         }
         .quote-preview-card {
-          border: 1px solid #1f2d4f;
-          background: #070f26;
+          border: 1px solid var(--quote-preview-border);
+          background: var(--quote-preview-bg);
           min-height: 100%;
           padding: 16px 16px 18px;
           display: flex;
@@ -847,7 +902,7 @@ export default function Quote() {
         }
         .quote-preview-label {
           font-family: 'Manrope', sans-serif;
-          color: #00ff9b;
+          color: var(--quote-accent);
           letter-spacing: 2px;
           font-size: 12px;
           margin-bottom: 12px;
@@ -864,19 +919,19 @@ export default function Quote() {
           max-width: 100%;
           border-radius: 4px;
           will-change: width, height;
-          filter: drop-shadow(0 0 22px rgba(0, 255, 155, 0.2));
+          filter: var(--quote-preview-glow);
         }
         .quote-preview-meta {
           display: flex;
           flex-direction: column;
           gap: 2px;
           font-family: 'Source Sans 3', sans-serif;
-          color: #95a7c6;
+          color: var(--quote-muted-text);
           font-size: 15px;
           line-height: 1.55;
         }
         .quote-preview-meta span {
-          color: #00ff9b;
+          color: var(--quote-accent);
           font-weight: 700;
         }
         .quote-toggle-row {
@@ -887,21 +942,21 @@ export default function Quote() {
         }
         .quote-toggle-text {
           font-family: 'Source Sans 3', sans-serif;
-          color: #a7bad7;
+          color: var(--quote-muted-strong);
           font-size: 16px;
           letter-spacing: 0.2px;
         }
         .quote-summary {
           margin-top: 6px;
-          border: 1px solid rgba(0, 255, 155, 0.2);
-          background: rgba(0, 255, 155, 0.05);
+          border: 1px solid var(--quote-summary-border);
+          background: var(--quote-summary-bg);
           padding: 12px 14px;
         }
         .quote-summary-title {
           font-family: 'Manrope', sans-serif;
           letter-spacing: 1.2px;
           font-size: 11px;
-          color: #00ff9b;
+          color: var(--quote-accent);
           margin-bottom: 8px;
         }
         .quote-summary-grid {
@@ -912,14 +967,14 @@ export default function Quote() {
         .quote-summary-row {
           display: flex;
           justify-content: space-between;
-          border-bottom: 1px solid rgba(42, 64, 99, 0.6);
+          border-bottom: 1px solid var(--quote-summary-row-border);
           padding-bottom: 4px;
           font-family: 'Source Sans 3', sans-serif;
-          color: #93a7c7;
+          color: var(--quote-muted-text);
           font-size: 14px;
         }
         .quote-summary-row strong {
-          color: #f0f4ff;
+          color: var(--quote-strong-text);
         }
         .quote-done {
           text-align: center;
@@ -930,12 +985,12 @@ export default function Quote() {
           height: 76px;
           margin: 0 auto 14px;
           border-radius: 50%;
-          border: 2px solid #00ff9b;
+          border: 2px solid var(--quote-accent);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #00ff9b;
-          box-shadow: 0 0 26px rgba(0, 255, 155, 0.3);
+          color: var(--quote-accent);
+          box-shadow: var(--quote-done-glow);
           font-family: 'Manrope', sans-serif;
           font-size: 15px;
           font-weight: 700;
@@ -943,13 +998,13 @@ export default function Quote() {
         .quote-done h2 {
           margin: 0 0 8px;
           font-family: 'Manrope', sans-serif;
-          color: #00ff9b;
+          color: var(--quote-accent);
           font-size: 23px;
         }
         .quote-done p {
           margin: 0 auto 20px;
           max-width: 560px;
-          color: #95a7c6;
+          color: var(--quote-muted-text);
           font-family: 'Source Sans 3', sans-serif;
           font-size: 16px;
           line-height: 1.6;
