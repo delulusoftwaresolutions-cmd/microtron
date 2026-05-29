@@ -6,8 +6,8 @@ const services = [
     icon: '🏭', color: '#00FF88',
     title: 'Electronics Manufacturing Services (EMS)',
     short: 'Full-scale PCB assembly for automotive, industrial & IoT applications.',
-    desc: 'Our EMS division delivers high-quality PCB assembly for automotive, industrial, and IoT applications. We support SMT, THT, and mixed assembly processes compliant with IPC-A-610 Class 2 and Class 3 standards. Our automated SMT lines feature high-speed pick-and-place machines, nitrogen reflow ovens, and 3D SPI/AOI systems for zero-defect manufacturing.',
-    highlights: ['SMT, THT & Mixed Assembly','IPC Class 2 & 3 Standards','AOI + X-Ray + ICT Testing','Turnkey & Consignment','NPI & Volume Production'],
+    desc: 'Our EMS division delivers high-quality PCB assembly for automotive, industrial, and IoT applications. We support SMT, THT, mixed assembly, and wire harness cable assembly processes compliant with IPC-A-610 Class 2 and Class 3 standards. Our automated SMT lines feature high-speed pick-and-place machines, nitrogen reflow ovens, and 3D SPI/AOI systems for zero-defect manufacturing.',
+    highlights: ['SMT, THT & Mixed Assembly','Wire Harness Cable Assembly','IPC Class 2 & 3 Standards','AOI + X-Ray + ICT Testing','Turnkey & Consignment','NPI & Volume Production'],
   },
   {
     icon: '🔌', color: '#D4860A',
@@ -29,6 +29,13 @@ const services = [
     short: 'Advanced BMS for LiFePO₄ packs — safety and performance for EV and solar.',
     desc: 'We design and manufacture advanced Battery Management Systems for LiFePO₄ and Li-ion packs. Our BMS solutions support 8S to 32S configurations with active cell balancing, CAN Bus communication, state-of-charge estimation, thermal management, and protection against overcharge, overdischarge, and short circuits.',
     highlights: ['8S to 32S Configuration','Active Cell Balancing','CAN Bus / RS-485 Comm','IP67 Rated Enclosures','SoC & SoH Estimation'],
+  },
+  {
+    icon: '🔌', color: '#00D4FF',
+    title: 'EV Charger Adaptors (48V–60V)',
+    short: 'Adaptor-type EV chargers for 48V to 60V battery systems.',
+    desc: 'We provide adaptor-type EV chargers designed for 48V to 60V EV battery packs used in electric scooters, e-rickshaws, and light electric vehicles. The charger designs focus on safe charging curves, thermal reliability, and stable long-cycle performance.',
+    highlights: ['48V to 60V Charging Range','Adaptor-type Form Factor','Thermal & Safety Protection','CC/CV Charging Profile','EV-ready Connectors'],
   },
   {
     icon: '📡', color: '#D4860A',
@@ -158,7 +165,6 @@ export default function Services() {
     </motion.div>
   )
 }
-
 
 
 

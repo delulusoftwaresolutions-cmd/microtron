@@ -9,10 +9,11 @@ gsap.registerPlugin(ScrollTrigger)
 
 const services = [
   { icon: '🔲', title: 'PCB Manufacturing', desc: 'Single to multilayer PCBs with IPC Class 2/3 standards. Automated SMT & THT assembly.' },
-  { icon: '⚙️', title: 'Component Assembly', desc: 'SMT, THT, and mixed assembly with AOI inspection, soldering and quality testing.' },
+  { icon: '⚙️', title: 'Component Assembly', desc: 'SMT, THT, mixed assembly, and wire harness cable assembly with AOI inspection, soldering, and quality testing.' },
   { icon: '🔌', title: 'Wire Harness', desc: 'Custom wire harnesses for automotive and industrial use with precision engineering.' },
   { icon: '⚡', title: 'BLDC Design', desc: 'Energy-efficient BLDC motor and controller design with custom hardware & firmware.' },
   { icon: '🔋', title: 'Battery BMS', desc: 'Advanced BMS for LiFePO₄ packs ensuring safety and longevity for EV/solar.' },
+  { icon: '🔌', title: 'EV Charger Adaptors', desc: 'Adaptor-type EV chargers from 48V to 60V for reliable charging of e-mobility battery packs.' },
   { icon: '📡', title: 'GPS Tracking', desc: 'AIS-140 certified GPS trackers with real-time monitoring and emergency SOS.' },
 ]
 
@@ -73,21 +74,21 @@ export default function Home() {
           {/* Left */}
           <div className="hero-left">
             <motion.div className="home-hero-badge" initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.2 }}
-              style={{ display:'inline-flex',alignItems:'center',gap:8,padding:'6px 14px',background:'rgba(0,255,136,0.08)',border:'1px solid rgba(0,255,136,0.2)',borderRadius:100,marginBottom:24 }}>
-              <div style={{ width:6,height:6,background:'#00FF88',borderRadius:'50%',boxShadow:'0 0 8px #00FF88',animation:'ledPulse 1.5s ease infinite' }} />
-              <span className="home-hero-badge-text" style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:12,fontWeight:600,letterSpacing:2,color:'#00FF88' }}>PRECISION ELECTRONICS MANUFACTURING</span>
+              style={{ display:'inline-flex',alignItems:'center',gap:8,padding:'6px 14px',background:'var(--accent-surface)',border:'1px solid var(--accent-border)',borderRadius:100,marginBottom:24 }}>
+              <div style={{ width:6,height:6,background:'var(--accent-green)',borderRadius:'50%',boxShadow:'0 0 8px var(--accent-green)',animation:'ledPulse 1.5s ease infinite' }} />
+              <span className="home-hero-badge-text" style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:12,fontWeight:600,letterSpacing:2,color:'var(--accent-green)' }}>PRECISION ELECTRONICS MANUFACTURING</span>
             </motion.div>
 
             <motion.h1 className="home-hero-title" initial={{ opacity:0,y:30 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.35 }}
               style={{ fontFamily:'Manrope,sans-serif',fontSize:'clamp(30px,3.8vw,48px)',fontWeight:800,lineHeight:1.08,letterSpacing:'-0.015em',marginBottom:20 }}>
               Engineering<br/>
-              <span style={{ color:'#00FF88' }}>Tomorrow&apos;s</span><br/>
+              <span style={{ color:'var(--accent-green)' }}>Tomorrow&apos;s</span><br/>
               Electronics Today
             </motion.h1>
 
             <motion.p className="home-hero-lead" initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.5 }}
               style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:17,color:'var(--text-secondary)',lineHeight:1.7,marginBottom:32,maxWidth:480 }}>
-              PCB Manufacturing · Component Assembly · EMS · BLDC Design · Battery BMS · AIS-140 GPS Solutions. Delivering world-class electronics from Puducherry, India.
+              PCB Manufacturing · Component Assembly · Wire Harness Cable Assembly · EV Charger Adaptors (48V–60V) · BLDC Design · Battery BMS · AIS-140 GPS Solutions. Delivering world-class electronics from Puducherry, India.
             </motion.p>
 
             <motion.div className="home-hero-actions" initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.65 }} style={{ display:'flex',gap:16,flexWrap:'wrap',marginBottom:48 }}>
@@ -100,7 +101,7 @@ export default function Home() {
               style={{ display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:24 }}>
               {stats.slice(0,3).map((s,i) => (
                 <div key={i} style={{ borderLeft:'2px solid var(--border-color)',paddingLeft:16 }}>
-                  <div style={{ fontFamily:'Manrope,sans-serif',fontSize:28,fontWeight:800,color:'#00FF88',lineHeight:1 }}>
+                  <div style={{ fontFamily:'Manrope,sans-serif',fontSize:28,fontWeight:800,color:'var(--accent-green)',lineHeight:1 }}>
                     <span className="stat-num" data-target={s.val}>0</span>{s.suffix}
                   </div>
                   <div style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:13,color:'var(--text-secondary)',letterSpacing:0.5,marginTop:4 }}>{s.label}</div>
@@ -115,13 +116,13 @@ export default function Home() {
             <PCBHeroAnimation />
             {/* Floating labels */}
             <motion.div className="hero-tag-left" animate={{ y:[-6,6,-6] }} transition={{ duration:3,repeat:Infinity,ease:'easeInOut' }}
-              style={{ position:'absolute',top:34,left:-156,padding:'8px 14px',background:'rgba(0,212,255,0.1)',border:'1px solid rgba(0,212,255,0.3)',borderRadius:6 }}>
-              <div style={{ fontFamily:'Manrope,sans-serif',fontSize:9,color:'#00D4FF',fontWeight:700 }}>SMT ASSEMBLY</div>
+              style={{ position:'absolute',top:34,left:-156,padding:'8px 14px',background:'var(--teal-surface)',border:'1px solid var(--teal-border)',borderRadius:6 }}>
+              <div style={{ fontFamily:'Manrope,sans-serif',fontSize:9,color:'var(--accent-teal)',fontWeight:700 }}>SMT ASSEMBLY</div>
               <div style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:11,color:'var(--text-secondary)' }}>IPC Class 2/3</div>
             </motion.div>
             <motion.div className="hero-tag-right" animate={{ y:[6,-6,6] }} transition={{ duration:3.5,repeat:Infinity,ease:'easeInOut',delay:0.5 }}
-              style={{ position:'absolute',bottom:24,right:-160,padding:'8px 14px',background:'rgba(212,134,10,0.1)',border:'1px solid rgba(212,134,10,0.3)',borderRadius:6 }}>
-              <div style={{ fontFamily:'Manrope,sans-serif',fontSize:9,color:'#D4860A',fontWeight:700 }}>QUALITY TESTED</div>
+              style={{ position:'absolute',bottom:24,right:-160,padding:'8px 14px',background:'var(--gold-surface)',border:'1px solid var(--gold-border)',borderRadius:6 }}>
+              <div style={{ fontFamily:'Manrope,sans-serif',fontSize:9,color:'var(--accent-gold)',fontWeight:700 }}>QUALITY TESTED</div>
               <div style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:11,color:'var(--text-secondary)' }}>100% AOI + ICT</div>
             </motion.div>
           </motion.div>
@@ -196,7 +197,7 @@ export default function Home() {
           <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:24,textAlign:'center' }}>
             {stats.map((s,i) => (
               <motion.div key={i} initial={{ opacity:0,y:20 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1 }}>
-                <div style={{ fontFamily:'Manrope,sans-serif',fontSize:36,fontWeight:900,color:'#00FF88',lineHeight:1 }}>
+                <div style={{ fontFamily:'Manrope,sans-serif',fontSize:36,fontWeight:900,color:'var(--accent-green)',lineHeight:1 }}>
                   <span className="stat-num" data-target={s.val}>0</span>{s.suffix}
                 </div>
                 <div style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:14,color:'var(--text-secondary)',letterSpacing:1,marginTop:6,textTransform:'uppercase' }}>{s.label}</div>
@@ -218,12 +219,12 @@ export default function Home() {
           <div className="home-services-grid" style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))',gap:24 }}>
             {services.map((s,i) => (
               <motion.div key={i} className="glass-card" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once:true }} custom={i}
-                whileHover={{ y:-6,boxShadow:'0 20px 40px rgba(0,255,136,0.1)',borderColor:'rgba(0,255,136,0.4)' }}
+                whileHover={{ y:-6,boxShadow:'0 20px 40px rgba(var(--accent-green-rgb),0.1)',borderColor:'rgba(var(--accent-green-rgb),0.4)' }}
                 style={{ padding:32,cursor:'pointer' }}>
                 <div style={{ fontSize:36,marginBottom:20 }}>{s.icon}</div>
                 <h3 style={{ fontFamily:'Manrope,sans-serif',fontSize:15,fontWeight:700,marginBottom:12,color:'var(--text-primary)' }}>{s.title}</h3>
                 <p style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:15,color:'var(--text-secondary)',lineHeight:1.6 }}>{s.desc}</p>
-                <div style={{ marginTop:20,display:'flex',alignItems:'center',gap:6,color:'#00FF88',fontFamily:'Source Sans 3,sans-serif',fontSize:13,fontWeight:600,letterSpacing:1 }}>
+                <div style={{ marginTop:20,display:'flex',alignItems:'center',gap:6,color:'var(--accent-green)',fontFamily:'Source Sans 3,sans-serif',fontSize:13,fontWeight:600,letterSpacing:1 }}>
                   LEARN MORE <span>→</span>
                 </div>
               </motion.div>
@@ -246,7 +247,7 @@ export default function Home() {
                 {['IPC Class 2 & 3 certified manufacturing','Full SMT, THT & mixed assembly capability','AOI + ICT + X-Ray quality inspection','Custom R&D and rapid prototyping','End-to-end from design to delivery','15+ years of industry expertise'].map((item,i) => (
                   <motion.div key={i} initial={{ opacity:0,x:-20 }} whileInView={{ opacity:1,x:0 }} viewport={{ once:true }} transition={{ delay:i*0.08 }}
                     style={{ display:'flex',alignItems:'center',gap:12 }}>
-                    <div style={{ width:22,height:22,background:'rgba(0,255,136,0.1)',border:'1px solid rgba(0,255,136,0.3)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:12 }}>✓</div>
+                    <div style={{ width:22,height:22,background:'var(--accent-surface)',border:'1px solid var(--accent-border)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:12 }}>✓</div>
                     <span style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:16,color:'var(--text-secondary)' }}>{item}</span>
                   </motion.div>
                 ))}
@@ -257,7 +258,7 @@ export default function Home() {
                 <div className="circuit-bg" />
                 <div className="home-why-card-grid" style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,position:'relative',zIndex:1 }}>
                   {[{icon:'🏭',label:'Manufacturing',sub:'IPC Certified'},{icon:'🔬',label:'Quality Control',sub:'AOI + X-Ray'},{icon:'⚡',label:'Fast Turnaround',sub:'24-72 hr proto'},{icon:'🤝',label:'Customer First',sub:'Dedicated support'}].map((item,i) => (
-                    <motion.div key={i} whileHover={{ scale:1.03 }} style={{ textAlign:'center',padding:24,background:'rgba(0,255,136,0.03)',border:'1px solid var(--border-color)',borderRadius:10 }}>
+                    <motion.div key={i} whileHover={{ scale:1.03 }} style={{ textAlign:'center',padding:24,background:'var(--accent-surface-soft)',border:'1px solid var(--border-color)',borderRadius:10 }}>
                       <div style={{ fontSize:32,marginBottom:8 }}>{item.icon}</div>
                       <div style={{ fontFamily:'Manrope,sans-serif',fontSize:11,fontWeight:700,color:'var(--text-primary)',marginBottom:4 }}>{item.label}</div>
                       <div style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:12,color:'var(--text-secondary)' }}>{item.sub}</div>
@@ -284,14 +285,14 @@ export default function Home() {
                 style={{ display:'flex',alignItems:'center',gap:0 }}>
                 <div style={{ textAlign:'center',padding:'0 8px' }}>
                   <motion.div whileHover={{ scale:1.1 }}
-                    style={{ width:64,height:64,borderRadius:'50%',background:'rgba(0,255,136,0.08)',border:'2px solid rgba(0,255,136,0.3)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:24,margin:'0 auto 12px',boxShadow:'0 0 20px rgba(0,255,136,0.1)' }}>
+                    style={{ width:64,height:64,borderRadius:'50%',background:'var(--accent-surface)',border:'2px solid var(--accent-border)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:24,margin:'0 auto 12px',boxShadow:'0 0 20px rgba(var(--accent-green-rgb),0.1)' }}>
                     {step.icon}
                   </motion.div>
                   <div className="home-process-label" style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:13,fontWeight:600,color:'var(--text-secondary)',letterSpacing:0.5,whiteSpace:'nowrap' }}>{step.label}</div>
-                  <div style={{ fontFamily:'Manrope,sans-serif',fontSize:10,color:'rgba(0,255,136,0.4)',marginTop:2 }}>0{i+1}</div>
+                  <div style={{ fontFamily:'Manrope,sans-serif',fontSize:10,color:'rgba(var(--accent-green-rgb),0.4)',marginTop:2 }}>0{i+1}</div>
                 </div>
                 {i < process.length-1 && (
-                  <div className="home-process-connector" style={{ width:40,height:2,background:'rgba(0,255,136,0.35)',marginBottom:32,flexShrink:0 }} />
+                  <div className="home-process-connector" style={{ width:40,height:2,background:'rgba(var(--accent-green-rgb),0.35)',marginBottom:32,flexShrink:0 }} />
                 )}
               </motion.div>
             ))}
@@ -322,13 +323,13 @@ export default function Home() {
           <motion.div initial={{ opacity:0,y:30 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }}>
             <div className="section-eyebrow" style={{ justifyContent:'center' }}>Get Started</div>
             <h2 style={{ fontFamily:'Manrope,sans-serif',fontSize:'clamp(28px,4vw,46px)',fontWeight:900,marginBottom:16,color:'var(--text-primary)' }}>
-              Ready to Start Your<br/><span style={{ color:'#00FF88' }}>PCB Project?</span>
+              Ready to Start Your<br/><span style={{ color:'var(--accent-green)' }}>PCB Project?</span>
             </h2>
             <p style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:18,color:'var(--text-secondary)',marginBottom:36,maxWidth:500,margin:'0 auto 36px' }}>
               Upload your Gerber files and get a competitive quote within 24 hours.
             </p>
             <Link to="/quote">
-              <motion.button className="btn-primary" whileHover={{ scale:1.05,boxShadow:'0 0 50px rgba(0,255,136,0.5)' }} whileTap={{ scale:0.97 }}
+              <motion.button className="btn-primary" whileHover={{ scale:1.05,boxShadow:'0 0 50px rgba(var(--accent-green-rgb),0.5)' }} whileTap={{ scale:0.97 }}
                 style={{ fontSize:15,padding:'16px 40px' }}>
                 Request a Quote Now →
               </motion.button>
@@ -339,8 +340,4 @@ export default function Home() {
     </motion.div>
   )
 }
-
-
-
-
 

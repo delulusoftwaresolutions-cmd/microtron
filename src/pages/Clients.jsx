@@ -69,7 +69,7 @@ export default function Clients() {
         <div style={{ marginBottom:16,overflow:'hidden' }}>
           <div className="marquee-track" style={{ display:'flex',gap:16,width:'max-content' }}>
             {[...row1,...row1].map((c,i) => (
-              <motion.div key={i} className="clients-marquee-chip" whileHover={{ borderColor:'#00FF88',color:'#00FF88' }}
+              <motion.div key={i} className="clients-marquee-chip" whileHover={{ borderColor:'var(--accent-green)',color:'var(--accent-green)' }}
                 style={{ padding:'14px 28px',background:'var(--surface-strong)',border:'1px solid var(--border-color)',borderRadius:8,fontFamily:'Manrope,sans-serif',fontSize:11,fontWeight:700,color:'var(--text-muted)',letterSpacing:1,whiteSpace:'nowrap',transition:'all 0.3s',cursor:'default' }}>
                 {c}
               </motion.div>
@@ -79,7 +79,7 @@ export default function Clients() {
         <div style={{ overflow:'hidden' }}>
           <div className="marquee-track-reverse" style={{ display:'flex',gap:16,width:'max-content' }}>
             {[...row2,...row2].map((c,i) => (
-              <motion.div key={i} className="clients-marquee-chip" whileHover={{ borderColor:'#00D4FF',color:'#00D4FF' }}
+              <motion.div key={i} className="clients-marquee-chip" whileHover={{ borderColor:'var(--accent-teal)',color:'var(--accent-teal)' }}
                 style={{ padding:'14px 28px',background:'var(--surface-strong)',border:'1px solid var(--border-color)',borderRadius:8,fontFamily:'Manrope,sans-serif',fontSize:11,fontWeight:700,color:'var(--text-muted)',letterSpacing:1,whiteSpace:'nowrap',transition:'all 0.3s',cursor:'default' }}>
                 {c}
               </motion.div>
@@ -99,7 +99,7 @@ export default function Clients() {
           <div style={{ display:'flex',flexWrap:'wrap',gap:14,justifyContent:'center' }}>
             {sectors.map((s,i) => (
               <motion.div key={i} initial={{ opacity:0,scale:0.9 }} whileInView={{ opacity:1,scale:1 }} viewport={{ once:true }} transition={{ delay:i*0.07 }}
-                whileHover={{ borderColor:'#00D4FF',color:'#00D4FF',y:-3 }}
+                whileHover={{ borderColor:'var(--accent-teal)',color:'var(--accent-teal)',y:-3 }}
                 className="sector-badge">
                 <span style={{ fontSize:18 }}>{s.icon}</span>
                 <span style={{ fontWeight:700,letterSpacing:1 }}>{s.label}</span>
@@ -148,7 +148,7 @@ export default function Clients() {
         <div className="container" style={{ textAlign:'center',position:'relative',zIndex:1 }}>
           <motion.div initial={{ opacity:0,y:20 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }}>
             <h2 style={{ fontFamily:'Manrope,sans-serif',fontSize:'clamp(24px,3vw,40px)',fontWeight:800,marginBottom:16 }}>
-              Become Our Next <span style={{ color:'#00FF88' }}>Success Story</span>
+              Become Our Next <span style={{ color:'var(--accent-green)' }}>Success Story</span>
             </h2>
             <p style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:16,color:'var(--text-secondary)',marginBottom:32 }}>Let's discuss your project and see how Microtron can deliver results.</p>
             <div style={{ display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap' }}>
@@ -169,7 +169,6 @@ export default function Clients() {
     </motion.div>
   )
 }
-
 
 
 

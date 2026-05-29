@@ -12,10 +12,12 @@ const products = [
   { cat:'Assembly', name:'SMT Assembly', specs:['0402 & above','BGA/QFN Support','AOI Inspection','IPC-A-610'], desc:'Surface mount technology assembly with automated pick-and-place and reflow soldering.', icon:'⚙️' },
   { cat:'Assembly', name:'THT Assembly', specs:['Through-Hole','Wave Soldering','Manual Soldering','IPC Certified'], desc:'Traditional through-hole assembly for power components and connectors.', icon:'🔧' },
   { cat:'Assembly', name:'Mixed Assembly', specs:['SMT + THT','Full Turnkey','Components Sourcing','Testing'], desc:'Combined SMT and THT assembly for complex boards requiring both technologies.', icon:'🔨' },
+  { cat:'Assembly', name:'Wire Harness Cable Assembly', specs:['Crimping & Termination','Continuity Tested','Custom Lengths','Harness Bundling'], desc:'Integrated wire harness cable assembly for control panels, battery packs, and EV wiring systems.', icon:'🧵' },
   { cat:'Wire Harness', name:'Custom Wire Harness', specs:['Auto Grade Wire','Custom Connectors','Strain Relief','Pull Test'], desc:'Precision-engineered wire harnesses for automotive, industrial and aerospace applications.', icon:'🔌' },
   { cat:'GPS Devices', name:'AIS-140 GPS Tracker', specs:['AIS-140 Certified','4G LTE','Emergency SOS','Tamper Alert'], desc:'Government-certified GPS tracking device with real-time monitoring for fleet management.', icon:'📡' },
   { cat:'BLDC & BMS', name:'BLDC Motor System', specs:['0.5kW–10kW','Custom Windings','Controller Included','High Efficiency'], desc:'Energy-efficient BLDC motors with custom firmware-optimized controllers for EV and industrial use.', icon:'⚡' },
   { cat:'BLDC & BMS', name:'LiFePO₄ BMS', specs:['8S–32S Support','Active Balancing','CAN Bus','IP67 Rated'], desc:'Advanced Battery Management Systems ensuring safety and longevity of lithium battery packs.', icon:'🔋' },
+  { cat:'BLDC & BMS', name:'EV Charger Adaptor (48V–60V)', specs:['48V–60V Output','Adaptor Type','CC/CV Charging','Protection Circuit'], desc:'Adaptor-type EV charger designed for safe and stable charging of 48V to 60V battery packs.', icon:'🔌' },
 ]
 
 const ProductArtwork = ({ product }) => {
@@ -107,6 +109,7 @@ const ProductArtwork = ({ product }) => {
           <path d="M96 64 H150" stroke="#00f7a1" strokeWidth="1.5"/>
         </>
       )
+    case 'Wire Harness Cable Assembly':
     case 'Custom Wire Harness':
       return frame(
         <>
@@ -127,6 +130,18 @@ const ProductArtwork = ({ product }) => {
           <path d="M88 36 Q104 18 122 36" stroke="#f3a81d" strokeWidth="1.8" fill="none"/>
           <path d="M82 30 Q104 8 128 30" stroke="#f3a81d" strokeWidth="1.2" fill="none" opacity="0.75"/>
           <path d="M80 78 Q104 96 128 78" stroke="#00f7a1" strokeWidth="1.6" fill="none"/>
+        </>
+      )
+    case 'EV Charger Adaptor (48V–60V)':
+      return frame(
+        <>
+          <rect x="38" y="34" width="54" height="38" rx="4" fill="#11182e" stroke="#2d3a61"/>
+          <rect x="96" y="42" width="42" height="22" rx="3" fill="#0f2132" stroke="#2d3a61"/>
+          <path d="M92 53 H96" stroke="#f3a81d" strokeWidth="2"/>
+          <path d="M138 53 H150" stroke="#00f7a1" strokeWidth="2"/>
+          <circle cx="58" cy="53" r="6" fill="none" stroke="#00f7a1" strokeWidth="1.5"/>
+          <path d="M54 53 H62 M58 49 V57" stroke="#00f7a1" strokeWidth="1.2"/>
+          <text x="44" y="82" fill="#8fcdb7" fontSize="8" fontFamily="Arial, sans-serif">48V–60V</text>
         </>
       )
     case 'BLDC Motor System':
@@ -200,7 +215,7 @@ export default function Products() {
             <AnimatePresence>
               {filtered.map((p,i) => (
                 <motion.div key={p.name} layout initial={{ opacity:0,scale:0.9 }} animate={{ opacity:1,scale:1 }} exit={{ opacity:0,scale:0.9 }} transition={{ duration:0.3,delay:i*0.05 }}
-                  whileHover={{ y:-6,boxShadow:'0 20px 40px rgba(0,255,136,0.12)',borderColor:'rgba(0,255,136,0.4)' }}
+                  whileHover={{ y:-6,boxShadow:'0 20px 40px rgba(var(--accent-green-rgb),0.14)',borderColor:'var(--accent-border-strong)' }}
                   className="glass-card products-card" style={{ padding:28,cursor:'pointer',overflow:'hidden',position:'relative' }}>
                   <div style={{ display:'flex',justifyContent:'center',marginBottom:20,marginTop:2 }}>
                     <ProductArtwork product={p} />
@@ -210,10 +225,10 @@ export default function Products() {
                   <p style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:14,color:'var(--text-secondary)',lineHeight:1.5,marginBottom:16 }}>{p.desc}</p>
                   <div style={{ display:'flex',flexWrap:'wrap',gap:6,marginBottom:20 }}>
                     {p.specs.map((s,j) => (
-                      <span key={j} style={{ padding:'3px 10px',background:'rgba(0,212,255,0.08)',border:'1px solid rgba(0,212,255,0.2)',borderRadius:4,fontSize:11,fontFamily:'Source Sans 3,sans-serif',fontWeight:600,color:'#00D4FF',letterSpacing:0.5 }}>{s}</span>
+                      <span key={j} style={{ padding:'3px 10px',background:'var(--info-chip-bg)',border:'1px solid var(--info-chip-border)',borderRadius:4,fontSize:11,fontFamily:'Source Sans 3,sans-serif',fontWeight:600,color:'var(--info-chip-text)',letterSpacing:0.5 }}>{s}</span>
                     ))}
                   </div>
-                  <motion.button whileHover={{ scale:1.03 }} style={{ width:'100%',padding:'10px 0',background:'rgba(0,255,136,0.08)',border:'1px solid rgba(0,255,136,0.3)',borderRadius:6,color:'#00FF88',fontFamily:'Manrope,sans-serif',fontSize:11,fontWeight:700,cursor:'pointer',letterSpacing:1 }}>
+                  <motion.button whileHover={{ scale:1.03 }} style={{ width:'100%',padding:'10px 0',background:'var(--accent-surface)',border:'1px solid var(--accent-border)',borderRadius:6,color:'var(--accent-green)',fontFamily:'Manrope,sans-serif',fontSize:11,fontWeight:700,cursor:'pointer',letterSpacing:1 }}>
                     VIEW DETAILS
                   </motion.button>
                 </motion.div>
@@ -233,8 +248,6 @@ export default function Products() {
     </motion.div>
   )
 }
-
-
 
 
 

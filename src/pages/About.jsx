@@ -33,7 +33,7 @@ export default function About() {
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="section-eyebrow">About Us</div>
-            <h1 className="section-title" style={{ fontSize: 'clamp(24px,3.6vw,42px)' }}>Engineering Excellence<br /><span style={{ color: '#00FF88' }}>Since 2010</span></h1>
+            <h1 className="section-title" style={{ fontSize: 'clamp(24px,3.6vw,42px)' }}>Engineering Excellence<br /><span style={{ color: 'var(--accent-green)' }}>Since 2010</span></h1>
             <p className="section-subtitle">A forward-thinking company committed to world-class electronics design, manufacturing, and integration services.</p>
           </motion.div>
         </div>
@@ -50,7 +50,7 @@ export default function About() {
               <div style={{ marginTop: 32 }}>
                 {timeline.map((item, i) => (
                   <motion.div key={i} className="timeline-item" initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                    <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 11, fontWeight: 700, color: '#00FF88', letterSpacing: 2, marginBottom: 4 }}>{item.year}</div>
+                    <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 11, fontWeight: 700, color: 'var(--accent-green)', letterSpacing: 2, marginBottom: 4 }}>{item.year}</div>
                     <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>{item.title}</div>
                     <div style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item.desc}</div>
                   </motion.div>
@@ -69,10 +69,10 @@ export default function About() {
               </div>
               <div className="about-mission-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 32 }}>
                 {missionVision.map((item, i) => (
-                  <motion.div key={i} whileHover={{ scale: 1.02, borderColor: 'rgba(0,255,136,0.4)' }}
+                  <motion.div key={i} whileHover={{ scale: 1.02, borderColor: 'var(--accent-border-strong)' }}
                     style={{ padding: 24, background: 'var(--surface-strong)', border: '1px solid var(--border-color)', borderRadius: 12, transition: 'all 0.3s' }}>
                     <div style={{ fontSize: 28, marginBottom: 10 }}>{item.icon}</div>
-                    <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 13, fontWeight: 700, color: '#00FF88', marginBottom: 8 }}>{item.title}</div>
+                    <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 13, fontWeight: 700, color: 'var(--accent-green)', marginBottom: 8 }}>{item.title}</div>
                     <p style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{item.desc}</p>
                   </motion.div>
                 ))}
@@ -92,7 +92,7 @@ export default function About() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 20 }}>
             {values.map((v, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
-                whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,255,136,0.1)' }}
+                whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(var(--accent-green-rgb),0.14)' }}
                 style={{ padding: 28, background: 'var(--surface-medium)', border: '1px solid var(--border-color)', borderRadius: 12, textAlign: 'center', transition: 'all 0.3s' }}>
                 <div style={{ fontSize: 36, marginBottom: 14 }}>{v.icon}</div>
                 <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>{v.title}</div>
@@ -114,9 +114,9 @@ export default function About() {
           <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', justifyContent: 'center' }}>
             {['IPC-A-610', 'IPC-7711/7721', 'AIS-140 GPS', 'ISO 9001:2015', 'RoHS Compliant', 'REACH Compliant'].map((cert, i) => (
               <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
-                whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(0,255,136,0.2)' }}
+                whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(var(--accent-green-rgb),0.2)' }}
                 className="about-cert-chip"
-                style={{ padding: '16px 28px', background: 'rgba(0,255,136,0.05)', border: '1px solid rgba(0,255,136,0.2)', borderRadius: 8, fontFamily: 'Manrope,sans-serif', fontSize: 11, fontWeight: 700, color: 'var(--accent-green)', letterSpacing: 1 }}>
+                style={{ padding: '16px 28px', background: 'var(--accent-surface-soft)', border: '1px solid var(--accent-border)', borderRadius: 8, fontFamily: 'Manrope,sans-serif', fontSize: 11, fontWeight: 700, color: 'var(--accent-green)', letterSpacing: 1 }}>
                 ✓ {cert}
               </motion.div>
             ))}
@@ -144,9 +144,9 @@ export default function About() {
           border-bottom: 1px solid var(--border-color);
         }
         :root[data-theme='light'] .about-cert-chip{
-          background: rgba(0,168,107,0.08)!important;
-          border-color: rgba(0,168,107,0.28)!important;
-          color: var(--accent-green-dim)!important;
+          background: var(--accent-surface)!important;
+          border-color: var(--accent-border)!important;
+          color: var(--accent-green)!important;
         }
         :root[data-theme='light'] .about-address-line{
           color: var(--text-primary)!important;
@@ -170,7 +170,6 @@ export default function About() {
     </motion.div>
   )
 }
-
 
 
 

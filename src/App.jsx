@@ -45,8 +45,8 @@ function CustomCursor() {
 
   return (
     <>
-      <div ref={cursorRef} style={{ width:20,height:20,border:'2px solid #00FF88',borderRadius:'50%',position:'fixed',pointerEvents:'none',zIndex:99999,transition:'left 0.08s ease,top 0.08s ease' }} />
-      <div ref={dotRef} style={{ width:6,height:6,background:'#00FF88',borderRadius:'50%',position:'fixed',pointerEvents:'none',zIndex:99999,boxShadow:'0 0 8px #00FF88' }} />
+      <div ref={cursorRef} style={{ width:20,height:20,border:'2px solid var(--accent-green)',borderRadius:'50%',position:'fixed',pointerEvents:'none',zIndex:99999,transition:'left 0.08s ease,top 0.08s ease' }} />
+      <div ref={dotRef} style={{ width:6,height:6,background:'var(--accent-green)',borderRadius:'50%',position:'fixed',pointerEvents:'none',zIndex:99999,boxShadow:'var(--glow-green)' }} />
     </>
   )
 }

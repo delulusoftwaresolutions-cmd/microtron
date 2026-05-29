@@ -33,7 +33,7 @@ export default function Navbar({ theme = 'dark', onToggleTheme }) {
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
         background: scrolled ? 'var(--nav-bg-scrolled)' : 'var(--nav-bg-top)',
-        backdropFilter: 'blur(20px)',
+        backdropFilter: 'var(--nav-backdrop)',
         borderBottom: scrolled ? '1px solid var(--border-color)' : '1px solid transparent',
         transition: 'all 0.3s ease',
         boxShadow: scrolled ? 'var(--nav-shadow)' : 'none',
@@ -65,8 +65,8 @@ export default function Navbar({ theme = 'dark', onToggleTheme }) {
             </Link>
           ))}
           <Link to="/quote" style={{ textDecoration: 'none', marginLeft: 8 }}>
-            <motion.button whileHover={{ scale: 1.05, boxShadow: '0 0 25px rgba(0,255,136,0.5)' }} whileTap={{ scale: 0.97 }}
-              style={{ padding: '9px 22px', background: 'transparent', border: '1px solid var(--accent-green)', borderRadius: 4, color: 'var(--accent-green)', fontFamily: 'Manrope,sans-serif', fontSize: 11, fontWeight: 700, cursor: 'pointer', letterSpacing: 1, boxShadow: '0 0 12px rgba(0,255,136,0.2)' }}>
+            <motion.button whileHover={{ scale: 1.05, boxShadow: '0 0 25px rgba(var(--accent-green-rgb),0.5)' }} whileTap={{ scale: 0.97 }}
+              style={{ padding: '9px 22px', background: 'transparent', border: '1px solid var(--accent-green)', borderRadius: 4, color: 'var(--accent-green)', fontFamily: 'Manrope,sans-serif', fontSize: 11, fontWeight: 700, cursor: 'pointer', letterSpacing: 1, boxShadow: '0 0 12px rgba(var(--accent-green-rgb),0.2)' }}>
               GET QUOTE
             </motion.button>
           </Link>

@@ -62,13 +62,12 @@ export default function Footer() {
             <div style={{ fontFamily: 'Manrope,sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--accent-green)', marginBottom: 20 }}>CONTACT</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
-                { icon: 'LOC', text: 'No.01, Bajana Madam Street, Muthiyarpalayam, Puducherry - 605009' },
-                { icon: 'TEL', text: '+91-9159991774 / +91-9159991775' },
+                { icon: 'LOC', text: 'No.01, Bajana Madam Street,\nMuthiyarpalayam, Puducherry - 605009' },
                 { icon: 'MAIL', text: 'sales@microtron.co.in' },
               ].map(({ icon, text }, i) => (
                 <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
                   <span style={{ fontSize: 14 }}>{icon}</span>
-                  <span style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>{text}</span>
+                  <span style={{ fontFamily: 'Source Sans 3,sans-serif', fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{text}</span>
                 </div>
               ))}
             </div>
@@ -89,7 +88,7 @@ export default function Footer() {
           <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             <Link to="/admin" style={{ textDecoration: 'none' }}>
               <motion.button
-                whileHover={{ scale: 1.03, boxShadow: '0 0 20px rgba(0,255,136,0.35)' }}
+                whileHover={{ scale: 1.03, boxShadow: '0 0 20px rgba(var(--accent-green-rgb),0.35)' }}
                 whileTap={{ scale: 0.98 }}
                 style={{
                   border: '1px solid var(--accent-green)',

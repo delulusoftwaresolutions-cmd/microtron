@@ -4,9 +4,11 @@ import { gsap } from 'gsap'
 import { addEnquiry } from '../utils/adminStore'
 
 const subjects = ['General Inquiry','Request a Quote','Technical Support','Partnership','Other']
+const officeAddress = 'No.01, Bajana Madam Street,\nMuthiyarpalayam, Puducherry - 605009'
+const mapEmbedUrl = 'https://maps.google.com/maps?q=No.01%20Bajana%20Madam%20Street%20Muthiyarpalayam%20Puducherry%20605009&z=15&output=embed'
 
 export default function Contact() {
-  const [form, setForm] = useState({ name:'',company:'',email:'',phone:'',subject:'General Inquiry',message:'' })
+  const [form, setForm] = useState({ name:'',company:'',email:'',subject:'General Inquiry',message:'' })
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
   const planeRef = useRef(null)
@@ -53,9 +55,9 @@ export default function Contact() {
                 {sent ? (
                   <motion.div initial={{ opacity:0,scale:0.8 }} animate={{ opacity:1,scale:1 }} style={{ textAlign:'center',padding:'40px 0' }}>
                     <div style={{ fontSize:56,marginBottom:16 }}>✅</div>
-                    <h3 style={{ fontFamily:'Manrope,sans-serif',fontSize:18,fontWeight:700,color:'#00FF88',marginBottom:8 }}>Message Sent!</h3>
+                    <h3 style={{ fontFamily:'Manrope,sans-serif',fontSize:18,fontWeight:700,color:'var(--accent-green)',marginBottom:8 }}>Message Sent!</h3>
                     <p style={{ fontFamily:'Source Sans 3,sans-serif',fontSize:15,color:'var(--text-secondary)' }}>Our team will reach out to you shortly.</p>
-                    <motion.button whileHover={{ scale:1.05 }} onClick={() => { setSent(false); setForm({ name:'',company:'',email:'',phone:'',subject:'General Inquiry',message:'' }) }}
+                    <motion.button whileHover={{ scale:1.05 }} onClick={() => { setSent(false); setForm({ name:'',company:'',email:'',subject:'General Inquiry',message:'' }) }}
                       className="btn-outline" style={{ marginTop:24 }}>Send Another</motion.button>
                   </motion.div>
                 ) : (
@@ -70,14 +72,10 @@ export default function Contact() {
                         <input className="form-input" value={form.company} onChange={e=>setForm({...form,company:e.target.value})} placeholder="Company name" />
                       </div>
                     </div>
-                    <div className="contact-form-row" style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:16 }}>
+                    <div className="contact-form-row" style={{ display:'grid',gridTemplateColumns:'1fr',gap:16 }}>
                       <div>
                         <label className="form-label">Email *</label>
                         <input className="form-input" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="your@email.com" required />
-                      </div>
-                      <div>
-                        <label className="form-label">Phone</label>
-                        <input className="form-input" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="+91 XXXXX XXXXX" />
                       </div>
                     </div>
                     <div>
@@ -105,10 +103,8 @@ export default function Contact() {
             <motion.div initial={{ opacity:0,x:40 }} whileInView={{ opacity:1,x:0 }} viewport={{ once:true }} transition={{ duration:0.7 }}>
               <div className="contact-info-list" style={{ display:'flex',flexDirection:'column',gap:20,marginBottom:32 }}>
                 {[
-                  { icon:'📍', label:'Office Address', value:'No.01, Bajana Madam Street, Muthiyarpalayam, Puducherry - 605009, India', color:'#00FF88' },
-                  { icon:'📞', label:'Phone Numbers', value:'+91-9159991774\n+91-9159991775', color:'#00D4FF' },
+                  { icon:'📍', label:'Location', value:officeAddress, color:'#00B96B' },
                   { icon:'📧', label:'Email', value:'sales@microtron.co.in', color:'#D4860A' },
-                  { icon:'⏰', label:'Business Hours', value:'Mon–Sat: 9:00 AM – 6:00 PM IST', color:'#00FF88' },
                 ].map((item,i) => (
                   <motion.div key={i} className="contact-info-card" initial={{ opacity:0,y:20 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1 }}
                     whileHover={{ borderColor:`${item.color}44`,x:4 }}
@@ -122,14 +118,27 @@ export default function Contact() {
                 ))}
               </div>
 
-              {/* Map placeholder */}
-              <div className="contact-map-wrap" style={{ borderRadius:12,overflow:'hidden',border:'1px solid var(--border-color)',position:'relative' }}>
+              <motion.div
+                className="contact-map-card"
+                initial={{ opacity:0,y:24 }}
+                whileInView={{ opacity:1,y:0 }}
+                viewport={{ once:true }}
+                transition={{ delay:0.2, duration:0.6 }}
+                style={{ background:'var(--surface-medium)',border:'1px solid var(--border-color)',borderRadius:12,padding:12 }}
+              >
+                <div style={{ fontFamily:'Manrope,sans-serif',fontSize:11,fontWeight:700,color:'var(--accent-green)',letterSpacing:1.5,marginBottom:10,textTransform:'uppercase' }}>
+                  Location Map
+                </div>
                 <iframe
+                  title="Microtron Puducherry Office Map"
+                  src={mapEmbedUrl}
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
                   className="contact-map-frame"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3903.0!2d79.83!3d11.93!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDU1JzQ4LjAiTiA3OcKwNDknNDguMCJF!5e0!3m2!1sen!2sin!4v1"
-                  width="100%" height="220" style={{ border:0,filter:'invert(90%) hue-rotate(180deg)',display:'block' }}
-                  allowFullScreen loading="lazy" title="Microtron Location" />
-              </div>
+                  style={{ width:'100%',height:260,border:0,borderRadius:10 }}
+                />
+              </motion.div>
             </motion.div>
           </div>
         </div>
@@ -145,15 +154,12 @@ export default function Contact() {
           .contact-info-list{gap:14px!important;margin-bottom:22px!important}
           .contact-info-card{padding:16px!important;gap:12px!important}
           .contact-info-icon{width:40px!important;height:40px!important;font-size:18px!important;border-radius:8px!important}
-          .contact-map-frame{height:190px!important}
+          .contact-map-frame{height:220px!important}
         }
       `}</style>
     </motion.div>
   )
 }
-
-
-
 
 
 
