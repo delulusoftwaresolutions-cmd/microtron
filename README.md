@@ -1,16 +1,31 @@
-# React + Vite
+# Microtron Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite frontend with a Node/Express API for quote and enquiry management.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Install dependencies:
+   `npm install`
+2. Run the frontend locally:
+   `npm run dev`
+3. Build the frontend for production:
+   `npm run build`
+4. Start the backend API:
+   `npm start`
 
-## React Compiler
+## Environment
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Create a `.env` file from `.env.example` and set:
 
-## Expanding the ESLint configuration
+- `MONGODB_URI` for the MongoDB connection string
+- `PORT` for the API port on Render or locally
+- `VITE_API_BASE_URL` in the frontend deployment so the app points at the API
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, and `SMTP_PASS` for outgoing email
+- `MAIL_TO` for the inbox that receives quote and contact notifications
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Notes
+
+- Quote requests and contact enquiries are stored in MongoDB when `VITE_API_BASE_URL` is set.
+- Each submission sends a branded confirmation email to the customer and a full details email to `MAIL_TO`.
+- If the API base URL is not configured, the frontend falls back to local storage for development.
+- The backend serves the built `dist/` folder when it exists, so a single Render web service can host both the API and the SPA.

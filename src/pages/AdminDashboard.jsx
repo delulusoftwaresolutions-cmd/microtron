@@ -1,5 +1,6 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { getEnquiries, getQuoteRequests, markQuotePending, markQuoteProvided } from '../utils/adminStore'
+import { useCallback } from 'react'
 
 function formatDate(value) {
   if (!value) return '-'
@@ -46,13 +47,17 @@ function QuoteCard({ quote, onSend, onReopen }) {
 
   const isProvided = quote.status === 'provided'
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!draft.amount || !draft.message) {
       setError('Amount and quote details are required before sending.')
       return
     }
     setError('')
-    onSend(quote.id, draft)
+    try {
+      await onSend(quote.id, draft)
+    } catch (err) {
+      setError(err?.message || 'Unable to send quote right now.')
+    }
   }
 
   return (
@@ -151,18 +156,29 @@ export default function AdminDashboard({ onLogout }) {
   const [quotes, setQuotes] = useState([])
   const [enquiries, setEnquiries] = useState([])
   const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
 
-  const refresh = () => {
-    setQuotes(getQuoteRequests())
-    setEnquiries(getEnquiries())
-  }
+  const refresh = useCallback(async ({ silent = false } = {}) => {
+    if (!silent) setLoading(true)
+    try {
+      const [nextQuotes, nextEnquiries] = await Promise.all([getQuoteRequests(), getEnquiries()])
+      setQuotes(nextQuotes)
+      setEnquiries(nextEnquiries)
+      setLoadError('')
+    } catch (err) {
+      setLoadError(err?.message || 'Unable to load quote data.')
+    } finally {
+      if (!silent) setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
     refresh()
-    const onFocus = () => refresh()
+    const onFocus = () => refresh({ silent: true })
     window.addEventListener('focus', onFocus)
     return () => window.removeEventListener('focus', onFocus)
-  }, [])
+  }, [refresh])
 
   const pendingQuotes = useMemo(() => quotes.filter((item) => item.status !== 'provided'), [quotes])
   const providedQuotes = useMemo(() => quotes.filter((item) => item.status === 'provided'), [quotes])
@@ -217,15 +233,15 @@ export default function AdminDashboard({ onLogout }) {
     })
   }, [quotes, enquiries, search])
 
-  const handleSendQuote = (id, draft) => {
-    markQuoteProvided(id, draft)
-    refresh()
+  const handleSendQuote = async (id, draft) => {
+    await markQuoteProvided(id, draft)
+    await refresh({ silent: true })
     setActiveTab('provided')
   }
 
-  const handleReopenQuote = (id) => {
-    markQuotePending(id)
-    refresh()
+  const handleReopenQuote = async (id) => {
+    await markQuotePending(id)
+    await refresh({ silent: true })
     setActiveTab('pending')
   }
 
@@ -262,27 +278,43 @@ export default function AdminDashboard({ onLogout }) {
         />
       </div>
 
+      {loadError && <div className="admin-empty">{loadError}</div>}
+
       {activeTab === 'pending' && (
         <section className="admin-section">
-          {pendingFiltered.length === 0 && <div className="admin-empty">No pending quotes found.</div>}
-          {pendingFiltered.map((quote) => (
-            <QuoteCard key={quote.id} quote={quote} onSend={handleSendQuote} onReopen={handleReopenQuote} />
-          ))}
+          {loading ? (
+            <div className="admin-empty">Loading quote data...</div>
+          ) : (
+            <>
+              {pendingFiltered.length === 0 && <div className="admin-empty">No pending quotes found.</div>}
+              {pendingFiltered.map((quote) => (
+                <QuoteCard key={quote.id} quote={quote} onSend={handleSendQuote} onReopen={handleReopenQuote} />
+              ))}
+            </>
+          )}
         </section>
       )}
 
       {activeTab === 'provided' && (
         <section className="admin-section">
-          {providedFiltered.length === 0 && <div className="admin-empty">No provided quotes found.</div>}
-          {providedFiltered.map((quote) => (
-            <QuoteCard key={quote.id} quote={quote} onSend={handleSendQuote} onReopen={handleReopenQuote} />
-          ))}
+          {loading ? (
+            <div className="admin-empty">Loading quote data...</div>
+          ) : (
+            <>
+              {providedFiltered.length === 0 && <div className="admin-empty">No provided quotes found.</div>}
+              {providedFiltered.map((quote) => (
+                <QuoteCard key={quote.id} quote={quote} onSend={handleSendQuote} onReopen={handleReopenQuote} />
+              ))}
+            </>
+          )}
         </section>
       )}
 
       {activeTab === 'enquiry' && (
         <section className="admin-section">
-          {leadList.length === 0 ? (
+          {loading ? (
+            <div className="admin-empty">Loading quote data...</div>
+          ) : leadList.length === 0 ? (
             <div className="admin-empty">No enquiries or quote leads yet.</div>
           ) : (
             <div className="admin-table-wrap">

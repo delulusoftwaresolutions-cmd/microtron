@@ -4,9 +4,50 @@ const ADMIN_SESSION_KEY = 'microtron_admin_session_v1'
 
 const ADMIN_USER = 'admin'
 const ADMIN_PASS = 'admin123'
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/$/, '')
 
 function canUseStorage() {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
+}
+
+function isRemoteApiEnabled() {
+  return Boolean(API_BASE_URL)
+}
+
+function buildApiUrl(path) {
+  return `${API_BASE_URL}${path}`
+}
+
+async function requestJson(path, options = {}) {
+  if (!isRemoteApiEnabled()) {
+    throw new Error('Remote API is not configured.')
+  }
+
+  const response = await fetch(buildApiUrl(path), {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    },
+    ...options,
+  })
+
+  if (!response.ok) {
+    const fallbackMessage = `${response.status} ${response.statusText}`.trim()
+    const bodyText = await response.text()
+    let message = bodyText || fallbackMessage
+    if (bodyText) {
+      try {
+        const payload = JSON.parse(bodyText)
+        message = payload?.message || payload?.error || message
+      } catch {
+        message = bodyText || fallbackMessage
+      }
+    }
+    throw new Error(message)
+  }
+
+  if (response.status === 204) return null
+  return response.json()
 }
 
 function readList(key) {
@@ -28,19 +69,23 @@ function createId(prefix) {
   return `${prefix}-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`
 }
 
+function normalizeFileEntry(file) {
+  return {
+    name: typeof file?.name === 'string' ? file.name : 'uploaded-file',
+    size: Number(file?.size || 0),
+  }
+}
+
 function normalizeQuotePayload(payload) {
   const files = Array.isArray(payload?.gerber?.files)
-    ? payload.gerber.files.map((file) => ({
-        name: typeof file?.name === 'string' ? file.name : 'uploaded-file',
-        size: Number(file?.size || 0),
-      }))
+    ? payload.gerber.files.map(normalizeFileEntry)
     : []
 
   return {
-    id: createId('Q'),
-    createdAt: new Date().toISOString(),
-    providedAt: '',
-    status: 'pending',
+    id: typeof payload?.id === 'string' && payload.id ? payload.id : createId('Q'),
+    createdAt: typeof payload?.createdAt === 'string' && payload.createdAt ? payload.createdAt : new Date().toISOString(),
+    providedAt: typeof payload?.providedAt === 'string' ? payload.providedAt : '',
+    status: payload?.status === 'provided' ? 'provided' : 'pending',
     contact: {
       company: payload?.contact?.company || '',
       name: payload?.contact?.name || '',
@@ -59,48 +104,105 @@ function normalizeQuotePayload(payload) {
       silkscreen: payload?.pcb?.silkscreen || '',
     },
     assembly: {
-      assembly: Boolean(payload?.asm?.assembly),
-      assemblyType: payload?.asm?.assemblyType || '',
-      supply: payload?.asm?.supply || '',
-      uniqueComps: payload?.asm?.uniqueComps || '',
-      specialReq: payload?.asm?.specialReq || '',
+      assembly: Boolean(payload?.assembly?.assembly),
+      assemblyType: payload?.assembly?.assemblyType || '',
+      supply: payload?.assembly?.supply || '',
+      uniqueComps: payload?.assembly?.uniqueComps || '',
+      specialReq: payload?.assembly?.specialReq || '',
     },
     gerber: {
       files,
       notes: payload?.gerber?.notes || '',
     },
     response: {
-      amount: '',
-      eta: '',
-      subject: '',
-      message: '',
+      amount: payload?.response?.amount || '',
+      eta: payload?.response?.eta || '',
+      subject: payload?.response?.subject || '',
+      message: payload?.response?.message || '',
     },
   }
+}
+
+function normalizeQuoteRecord(raw) {
+  return normalizeQuotePayload(raw)
+}
+
+function normalizeEnquiryPayload(payload) {
+  return {
+    id: typeof payload?.id === 'string' && payload.id ? payload.id : createId('E'),
+    createdAt: typeof payload?.createdAt === 'string' && payload.createdAt ? payload.createdAt : new Date().toISOString(),
+    company: payload?.company || '',
+    contactName: payload?.contactName || payload?.name || '',
+    email: payload?.email || '',
+    phone: payload?.phone || '',
+    subject: payload?.subject || '',
+    message: payload?.message || '',
+    source: payload?.source || 'contact',
+  }
+}
+
+function normalizeEnquiryRecord(raw) {
+  return normalizeEnquiryPayload(raw)
 }
 
 function sortByNewest(items) {
   return [...items].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
 }
 
-export function getQuoteRequests() {
-  return sortByNewest(readList(QUOTES_KEY))
+function remoteQuotePath(id = '') {
+  return id ? `/quotes/${encodeURIComponent(id)}` : '/quotes'
 }
 
-export function addQuoteRequest(payload) {
+function remoteEnquiryPath(id = '') {
+  return id ? `/enquiries/${encodeURIComponent(id)}` : '/enquiries'
+}
+
+export async function getQuoteRequests() {
+  if (isRemoteApiEnabled()) {
+    const data = await requestJson(remoteQuotePath())
+    return sortByNewest(Array.isArray(data) ? data.map(normalizeQuoteRecord) : [])
+  }
+
+  return sortByNewest(readList(QUOTES_KEY).map(normalizeQuoteRecord))
+}
+
+export async function addQuoteRequest(payload) {
   const next = normalizeQuotePayload(payload)
-  const current = getQuoteRequests()
+
+  if (isRemoteApiEnabled()) {
+    const saved = await requestJson(remoteQuotePath(), {
+      method: 'POST',
+      body: JSON.stringify(next),
+    })
+    return normalizeQuoteRecord(saved)
+  }
+
+  const current = await getQuoteRequests()
   writeList(QUOTES_KEY, [next, ...current])
   return next
 }
 
-export function updateQuoteRequest(id, updater) {
-  const current = getQuoteRequests()
-  const next = current.map((item) => (item.id === id ? updater(item) : item))
-  writeList(QUOTES_KEY, next)
-  return next.find((item) => item.id === id) || null
+export async function updateQuoteRequest(id, updater) {
+  const current = await getQuoteRequests()
+  const existing = current.find((item) => item.id === id)
+  if (!existing) return null
+
+  const next = updater(existing)
+
+  if (isRemoteApiEnabled()) {
+    const saved = await requestJson(remoteQuotePath(id), {
+      method: 'PATCH',
+      body: JSON.stringify(next),
+    })
+    return normalizeQuoteRecord(saved)
+  }
+
+  const merged = current.map((item) => (item.id === id ? next : item))
+  writeList(QUOTES_KEY, merged)
+  return next
 }
 
-export function markQuoteProvided(id, response) {
+export async function markQuoteProvided(id, response) {
   return updateQuoteRequest(id, (item) => ({
     ...item,
     status: 'provided',
@@ -114,7 +216,7 @@ export function markQuoteProvided(id, response) {
   }))
 }
 
-export function markQuotePending(id) {
+export async function markQuotePending(id) {
   return updateQuoteRequest(id, (item) => ({
     ...item,
     status: 'pending',
@@ -122,24 +224,27 @@ export function markQuotePending(id) {
   }))
 }
 
-export function getEnquiries() {
-  return sortByNewest(readList(ENQUIRIES_KEY))
-}
-
-export function addEnquiry(payload) {
-  const next = {
-    id: createId('E'),
-    createdAt: new Date().toISOString(),
-    company: payload?.company || '',
-    contactName: payload?.name || '',
-    email: payload?.email || '',
-    phone: payload?.phone || '',
-    subject: payload?.subject || '',
-    message: payload?.message || '',
-    source: payload?.source || 'contact',
+export async function getEnquiries() {
+  if (isRemoteApiEnabled()) {
+    const data = await requestJson(remoteEnquiryPath())
+    return sortByNewest(Array.isArray(data) ? data.map(normalizeEnquiryRecord) : [])
   }
 
-  const current = getEnquiries()
+  return sortByNewest(readList(ENQUIRIES_KEY).map(normalizeEnquiryRecord))
+}
+
+export async function addEnquiry(payload) {
+  const next = normalizeEnquiryPayload(payload)
+
+  if (isRemoteApiEnabled()) {
+    const saved = await requestJson(remoteEnquiryPath(), {
+      method: 'POST',
+      body: JSON.stringify(next),
+    })
+    return normalizeEnquiryRecord(saved)
+  }
+
+  const current = await getEnquiries()
   writeList(ENQUIRIES_KEY, [next, ...current])
   return next
 }
@@ -157,4 +262,3 @@ export function setAdminSession(isLoggedIn) {
   if (!canUseStorage()) return
   window.localStorage.setItem(ADMIN_SESSION_KEY, isLoggedIn ? '1' : '0')
 }
-

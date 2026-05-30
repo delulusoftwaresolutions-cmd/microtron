@@ -11,19 +11,38 @@ export default function Contact() {
   const [form, setForm] = useState({ name:'',company:'',email:'',subject:'General Inquiry',message:'' })
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
   const planeRef = useRef(null)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setSending(true)
-    addEnquiry({ ...form, source: 'contact' })
-    if (planeRef.current) {
-      gsap.to(planeRef.current, { x: 150, y: -80, opacity: 0, duration: 0.8, ease: 'power2.in', onComplete: () => {
-        setSending(false)
-        setSent(true)
-      }})
-    } else {
-      setTimeout(() => { setSending(false); setSent(true) }, 1000)
+    setError('')
+
+    try {
+      await addEnquiry({ ...form, source: 'contact' })
+
+      if (planeRef.current) {
+        gsap.to(planeRef.current, {
+          x: 150,
+          y: -80,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power2.in',
+          onComplete: () => {
+            setSending(false)
+            setSent(true)
+          },
+        })
+      } else {
+        setTimeout(() => {
+          setSending(false)
+          setSent(true)
+        }, 1000)
+      }
+    } catch (err) {
+      setSending(false)
+      setError(err?.message || 'Unable to send your message right now.')
     }
   }
 
@@ -94,6 +113,7 @@ export default function Contact() {
                         {sending ? 'Sending...' : 'Send Message'} ✈️
                       </span>
                     </motion.button>
+                    {error && <div style={{ color: '#ff7e7e', fontFamily: 'Source Sans 3,sans-serif', fontSize: 14 }}>{error}</div>}
                   </form>
                 )}
               </div>

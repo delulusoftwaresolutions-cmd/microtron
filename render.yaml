@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: microtron-website
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: /api
+      - key: MONGODB_URI
+        sync: false
+      - key: COMPANY_NAME
+        value: Microtron
+      - key: MAIL_TO
+        value: sales@microtron.co.in
+      - key: MAIL_FROM
+        value: Microtron <no-reply@microtron.co.in>
+      - key: MAIL_REPLY_TO
+        value: sales@microtron.co.in
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_SECURE
+        value: false

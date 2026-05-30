@@ -67,8 +67,11 @@ function ProgressBar({ step }) {
 function Step1({ data, setData }) {
   const width = parseBoardDimension(data.width, 100)
   const height = parseBoardDimension(data.height, 80)
-  const previewW = mapRange(width, BOARD_MIN_MM, BOARD_MAX_MM, PREVIEW_MIN_W, PREVIEW_MAX_W)
-  const previewH = mapRange(height, BOARD_MIN_MM, BOARD_MAX_MM, PREVIEW_MIN_H, PREVIEW_MAX_H)
+  const previewArea = Math.sqrt(width * height)
+  const previewScale = mapRange(previewArea, BOARD_MIN_MM, BOARD_MAX_MM, 1, 1.6)
+  const aspectRatio = width / height
+  const previewW = clamp(160 * Math.sqrt(aspectRatio) * previewScale, PREVIEW_MIN_W, PREVIEW_MAX_W)
+  const previewH = clamp(160 / Math.sqrt(aspectRatio) * previewScale, PREVIEW_MIN_H, PREVIEW_MAX_H)
   const maskTheme = {
     Green: { board: '#0d5428', border: '#00ff9d', inner: 'rgba(163,220,192,0.25)', holeStroke: '#7fa0d1' },
     Red: { board: '#5e1010', border: '#ff7070', inner: 'rgba(255,188,188,0.25)', holeStroke: '#ffb2b2' },
@@ -549,6 +552,8 @@ function Step5({ quoteId }) {
 
 export default function Quote() {
   const [step, setStep] = useState(0)
+  const [submitError, setSubmitError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const [pcb, setPcb] = useState({
     layers: '2',
     width: '100',
@@ -583,11 +588,23 @@ export default function Quote() {
   }
   const [dir, setDir] = useState(1)
 
-  const next = () => {
+  const next = async () => {
+    if (submitting) return
     if (step < steps.length - 1) {
       if (step === steps.length - 2) {
-        const saved = addQuoteRequest({ pcb, asm, gerber, contact })
-        setSubmittedQuoteId(saved?.id || '')
+        setSubmitting(true)
+        setSubmitError('')
+        try {
+          const saved = await addQuoteRequest({ pcb, asm, gerber, contact })
+          setSubmittedQuoteId(saved?.id || '')
+          setDir(1)
+          setStep((s) => s + 1)
+        } catch (error) {
+          setSubmitError(error?.message || 'Unable to submit quote request.')
+        } finally {
+          setSubmitting(false)
+        }
+        return
       }
       setDir(1)
       setStep((s) => s + 1)
@@ -638,11 +655,12 @@ export default function Quote() {
                 <button className="btn-outline" onClick={back} disabled={step === 0} style={{ opacity: step === 0 ? 0.4 : 1, pointerEvents: step === 0 ? 'none' : 'auto' }}>
                   Back
                 </button>
-                <button className="btn-primary" onClick={next} disabled={!canNext} style={{ opacity: canNext ? 1 : 0.55, pointerEvents: canNext ? 'auto' : 'none' }}>
-                  {step === steps.length - 2 ? 'Submit Quote Request' : 'Continue'}
+                <button className="btn-primary" onClick={next} disabled={!canNext || submitting} style={{ opacity: canNext && !submitting ? 1 : 0.55, pointerEvents: canNext && !submitting ? 'auto' : 'none' }}>
+                  {step === steps.length - 2 ? (submitting ? 'Submitting...' : 'Submit Quote Request') : 'Continue'}
                 </button>
               </div>
             )}
+            {submitError && <div style={{ marginTop: 10, color: '#ff7e7e', fontFamily: 'Source Sans 3,sans-serif', fontSize: 14 }}>{submitError}</div>}
           </div>
         </div>
       </section>
